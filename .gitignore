@@ -1,0 +1,17 @@
+# Local artefakty
+.DS_Store
+Thumbs.db
+*.log
+
+# Edytor / IDE
+.vscode/
+.idea/
+*.swp
+
+# Robocze pliki preview / launch
+.claude/
+.review/
+
+# Cache
+node_modules/
+.cache/

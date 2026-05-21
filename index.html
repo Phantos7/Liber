@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>LIBER — Joanna F. Bielak · Tom I · Biuro Poszukiwań</title>
+<meta name="description" content="LIBER — Tom I trylogii kryminalnej Joanny F. Bielak. Premiera 09.06.2026. Wydawnictwo Metafora. Więzienie nie jest przeszkodą, by walczyć o prawa zwierząt." />
+<meta property="og:title" content="LIBER — Joanna F. Bielak · Tom I" />
+<meta property="og:description" content="Kryminał klasy premium. Premiera 09.06.2026." />
+<meta property="og:image" content="assets/cover-paperback.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#top">Pomiń nawigację</a>
+
+<!-- Custom cursor -->
+<div class="cursor" data-cursor></div>
+<div class="cursor-dot" data-cursor-dot></div>
+
+<!-- Film grain & vignette overlay -->
+<div class="grain" aria-hidden="true"></div>
+<div class="scanlines" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- Page loader -->
+<div class="loader" data-loader>
+  <div class="loader__inner">
+    <div class="loader__rail">
+      <div class="loader__fill" data-loader-fill></div>
+    </div>
+    <div class="loader__label">
+      <span class="mono small">SECURE TRANSMISSION ▸ DEKODOWANIE</span>
+      <span class="loader__pct mono small" data-loader-pct>00%</span>
+    </div>
+  </div>
+</div>
+
+<!-- Top nav -->
+<header class="nav" data-nav>
+  <a class="nav__brand mono" href="#top" aria-label="LIBER">
+    <span class="nav__mark">◐</span> J.F. BIELAK <span class="nav__sep">/</span> LIBER
+  </a>
+  <nav class="nav__links mono" id="nav-links" aria-label="Sekcje">
+    <a href="#sprawa">Sprawa</a>
+    <a href="#synopsis">Fabuła</a>
+    <a href="#zespol">Zespół</a>
+    <a href="#cytaty">Cytaty</a>
+    <a href="#opinie">Opinie</a>
+    <a href="#trylogia">Trylogia</a>
+    <a href="#autorka">Autorka</a>
+    <a href="#formaty">Pre-order</a>
+    <a href="#zapisy">Zapisy</a>
+  </nav>
+  <a class="nav__cta mono" href="#formaty" data-magnetic>
+    <span>Zamów</span>
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+  </a>
+  <button class="nav__burger" aria-label="Menu" aria-expanded="false" aria-controls="nav-links" data-burger>
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<main id="top">
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" data-hero>
+  <div class="hero__bg" data-parallax-bg>
+    <img src="assets/forest-bg.png" alt="" class="hero__bg-img" fetchpriority="high" />
+    <div class="hero__bg-overlay"></div>
+  </div>
+  <div class="hero__fog" aria-hidden="true">
+    <div class="hero__fog-layer hero__fog-layer--a"></div>
+    <div class="hero__fog-layer hero__fog-layer--b"></div>
+    <div class="hero__fog-layer hero__fog-layer--c"></div>
+  </div>
+
+  <!-- live badge -->
+  <div class="live-badge mono" data-cursor-trigger>
+    <span class="live-badge__dot"></span>
+    <span>LIVE · TRANSMISJA Z MIEJSCA PRZETRZYMYWANIA</span>
+    <span class="live-badge__time" data-live-clock>--:--:--</span>
+  </div>
+
+  <div class="hero__crosshair" aria-hidden="true">
+    <div class="hero__crosshair-h"></div>
+    <div class="hero__crosshair-v"></div>
+  </div>
+
+  <div class="hero__content">
+    <div class="hero__grid">
+      <div class="hero__text">
+        <div class="hero__eyebrow mono">
+          <span>J.F. BIELAK · TRYLOGIA KRYMINALNA</span>
+          <span class="hero__eyebrow-sep">·</span>
+          <span>BIURO POSZUKIWAŃ · TOM I</span>
+        </div>
+
+        <h1 class="hero__title" data-split>
+          <span class="hero__title-line" data-glitch="LIBER">LIBER</span>
+        </h1>
+
+        <p class="hero__motto serif" data-reveal>
+          <em>„Więzienie nie jest przeszkodą,</em><br/>
+          <em>by walczyć o prawa zwierząt.”</em>
+        </p>
+
+        <div class="hero__divider"><span></span><span></span><span></span></div>
+
+        <p class="hero__lede" data-reveal>
+          Zaginięcie syna ministra środowiska wciąga zespół Biura Poszukiwań KGP
+          w wojnę wszystkich ze wszystkimi. Codzienne transmisje live z miejsca
+          przetrzymywania zakładnika rozpalają ulice. Dla jednych — obrońcy
+          zwierząt. Dla innych — ekoterroryści.
+        </p>
+
+        <div class="hero__cta">
+          <a href="#formaty" class="btn btn--primary mono" data-magnetic>
+            <span class="btn__label">Zarezerwuj egzemplarz</span>
+            <span class="btn__shine"></span>
+          </a>
+          <a href="#sprawa" class="btn btn--ghost mono" data-magnetic>
+            <span>▸ Otwórz akta sprawy</span>
+          </a>
+        </div>
+      </div>
+
+      <aside class="hero__packshot" aria-label="Okładka książki LIBER">
+        <div class="hero__packshot-frame">
+          <div class="hero__packshot-glow"></div>
+          <img src="assets/cover-paperback.png" alt="Okładka książki LIBER" class="hero__packshot-img" data-float fetchpriority="high" decoding="async" />
+          <div class="hero__packshot-shadow"></div>
+        </div>
+        <div class="hero__packshot-meta mono">
+          <span class="hero__packshot-tag">EVIDENCE&nbsp;ITEM</span>
+          <span class="hero__packshot-code">№&nbsp;LB-001/26</span>
+        </div>
+      </aside>
+    </div>
+
+    <!-- countdown -->
+    <div class="countdown" data-countdown>
+      <div class="countdown__label mono"><span class="countdown__pulse"></span>PREMIERA · 09 · 06 · 2026</div>
+      <div class="countdown__grid">
+        <div class="countdown__cell"><span class="countdown__num" data-cd="d">--</span><span class="countdown__u mono">DNI</span></div>
+        <div class="countdown__cell"><span class="countdown__num" data-cd="h">--</span><span class="countdown__u mono">GODZIN</span></div>
+        <div class="countdown__cell"><span class="countdown__num" data-cd="m">--</span><span class="countdown__u mono">MINUT</span></div>
+        <div class="countdown__cell"><span class="countdown__num" data-cd="s">--</span><span class="countdown__u mono">SEKUND</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__scroll mono" aria-hidden="true">
+    <span>SCROLL</span>
+    <span class="hero__scroll-line"></span>
+  </div>
+</section>
+
+<!-- ===================== TICKER ===================== -->
+<section class="ticker" aria-label="Postulaty Liberatorów">
+  <h2 class="sr-only">Postulaty Liberatorów: animaliści będą walczyć do skutku; liberatorzy podnoszą strajk; zakaz hodowli zwierząt futerkowych; koniec testów na zwierzętach.</h2>
+  <div class="ticker__track" data-ticker aria-hidden="true">
+    <span class="ticker__item">★ ANIMALIŚCI BĘDĄ WALCZYĆ DO SKUTKU</span>
+    <span class="ticker__item ticker__item--accent">// LIBERATORZY PODNOSZĄ STRAJK</span>
+    <span class="ticker__item">★ ZAKAZ HODOWLI ZWIERZĄT FUTERKOWYCH</span>
+    <span class="ticker__item ticker__item--accent">// LUDZIE, STRZEŻCIE SIĘ</span>
+    <span class="ticker__item">★ KONIEC TESTÓW NA ZWIERZĘTACH</span>
+    <span class="ticker__item ticker__item--accent">// W IMIENIU WSZYSTKICH CIERPIĄCYCH</span>
+    <span class="ticker__item">★ ZWIERZĘ NIE JEST PRODUKTEM</span>
+    <span class="ticker__item ticker__item--accent">// EKOTAŻ · MONKEYWRENCHING</span>
+    <span class="ticker__item">★ ANIMALIŚCI BĘDĄ WALCZYĆ DO SKUTKU</span>
+    <span class="ticker__item ticker__item--accent">// LIBERATORZY PODNOSZĄ STRAJK</span>
+    <span class="ticker__item">★ ZAKAZ HODOWLI ZWIERZĄT FUTERKOWYCH</span>
+    <span class="ticker__item ticker__item--accent">// LUDZIE, STRZEŻCIE SIĘ</span>
+    <span class="ticker__item">★ KONIEC TESTÓW NA ZWIERZĘTACH</span>
+    <span class="ticker__item ticker__item--accent">// W IMIENIU WSZYSTKICH CIERPIĄCYCH</span>
+    <span class="ticker__item">★ ZWIERZĘ NIE JEST PRODUKTEM</span>
+    <span class="ticker__item ticker__item--accent">// EKOTAŻ · MONKEYWRENCHING</span>
+  </div>
+</section>
+
+<!-- ===================== AKTA SPRAWY ===================== -->
+<section id="sprawa" class="section section--case">
+  <div class="section__header">
+    <div class="section__num mono">01 / AKTA</div>
+    <h2 class="section__title serif" data-split-words>Sprawa Nr <span class="accent">L-2026/06/09</span></h2>
+    <div class="section__sub mono">KLAUZULA · POUFNE · KAT. PREMIUM</div>
+  </div>
+
+  <div class="case">
+    <article class="case__file" data-reveal>
+      <header class="case__filehead mono">
+        <span>DOSSIER ▸ ABSTRACT</span>
+        <span class="case__stamp">CLASSIFIED</span>
+      </header>
+      <div class="case__body serif">
+        <p><span class="dropcap">Z</span>aginięcie syna ministra środowiska to początek działań grupy aktywistów w obronie praw zwierząt. Zespół Biura Poszukiwań KGP musi stawić czoła opinii publicznej, naciskom ekologów, atakom w mediach, spec-służbom oraz rządowi nieskoremu do negocjacji z porywaczami.</p>
+        <p>Nie pomagają codzienne transmisje live z miejsca przetrzymywania zakładników ani fakt, że minister za młodu działał w eko-bojówkach. <span class="hl">Dla wielu walka o środowisko to ekoterroryzm.</span></p>
+      </div>
+      <footer class="case__meta mono">
+        <div><span class="case__k">GATUNEK</span><span class="case__v">Kryminał · Sensacja</span></div>
+        <div><span class="case__k">ODBIORCA</span><span class="case__v">16+</span></div>
+        <div><span class="case__k">TEMATYKA</span><span class="case__v">Ekologia · Ekoterroryzm · Lobby futrzarskie</span></div>
+        <div><span class="case__k">PREMIERA</span><span class="case__v">09.06.2026</span></div>
+      </footer>
+    </article>
+
+    <aside class="case__pull" data-reveal>
+      <div class="case__pullmark">“</div>
+      <blockquote class="serif">
+        Dylemat, kto robił źle, literalnie posługiwał się złem, a kto użył niestandardowych środków w obronie zwierząt — to zawsze jest <em>miecz obosieczny</em>.
+      </blockquote>
+      <div class="case__pullsig mono">— motyw przewodni · LIBER</div>
+    </aside>
+  </div>
+</section>
+
+<!-- ===================== SYNOPSIS / NARRACJA ===================== -->
+<section id="synopsis" class="section section--syn">
+  <div class="syn">
+    <div class="syn__stickycol" data-reveal>
+      <div class="syn__num mono">02 / FABUŁA</div>
+      <h2 class="syn__title serif">Wojna<br/>wszystkich<br/>ze wszystkimi.</h2>
+      <p class="syn__sub mono">Warszawa. Plac przy stacji Metro Centrum. Wielki telebim wyświetla kolejne postulaty.</p>
+      <video class="syn__video" autoplay muted loop playsinline preload="metadata" poster="assets/forest-bg.png">
+        <source src="assets/motto-clip.mp4" type="video/mp4" />
+      </video>
+    </div>
+
+    <div class="syn__story">
+      <article class="syn__chunk" data-reveal>
+        <span class="syn__chip mono">▸ ZGŁOSZENIE</span>
+        <p class="serif">Zespół w Biurze Poszukiwań Zaginionych i Identyfikacji Osób KGP dostaje zgłoszenie zaginięcia syna ministra środowiska. Zaraz potem, na placu przy wejściu do stacji Metro Centrum, ktoś montuje wielki telebim, na którym wyświetlane są kolejne postulaty ekologów.</p>
+      </article>
+      <article class="syn__chunk" data-reveal>
+        <span class="syn__chip mono">▸ PIERWSZE PODEJRZENIE</span>
+        <p class="serif">Szybko pada podejrzenie, że to <span class="hl">eko-wojownicy uprowadzili syna ministra</span>, by wywrzeć wpływ na rząd. W stolicach Europy zbierają się pikiety poparcia. W Warszawie — nagonki na policję.</p>
+      </article>
+      <article class="syn__chunk" data-reveal>
+        <span class="syn__chip mono">▸ ROZŁAM SPOŁECZNY</span>
+        <p class="serif">Istnieje zagrożenie zamieszek pomiędzy zwolennikami a przeciwnikami: rządu, walczących grup ekologicznych, mięsożerców i wegetarian, wreszcie matek domagających się badań nowych leków, bo <em>dzieci to jednak nie są króliki doświadczalne</em>.</p>
+      </article>
+      <article class="syn__chunk" data-reveal>
+        <span class="syn__chip mono">▸ DRUGI PLAN: MARS</span>
+        <p class="serif">Fabuła drugiego planu to historia fikcyjnej grupy ekologów lat 90. — <span class="mono small">MARS · Motus Animale Regnum Servare</span> — Ruch Ratowania Królestwa Zwierząt. Właśnie z nimi działał minister. Poznajemy ich agendę, ideologię, motywacje. Proces radykalizacji.</p>
+      </article>
+      <article class="syn__chunk" data-reveal>
+        <span class="syn__chip mono">▸ BLOKADY BETY</span>
+        <p class="serif">Beta Sroka dowodzi BP, jednocześnie mierzy się z własnymi blokadami — „syndrom ocalałego”. Na siłowni trafia na koleżankę z pracy sprzed lat, która próbuje ją uwieść. Kochanka okazuje się podstępną manipulantką, zamieszaną w uprowadzenie chłopaka.</p>
+      </article>
+      <article class="syn__chunk syn__chunk--final" data-reveal>
+        <span class="syn__chip mono">▸ STAWKA</span>
+        <p class="serif">Beta musi — tym razem świadomie — odrzucić emocje. Zagrożenie cyber-atakiem na laboratorium badające jakość wody i produktów spożywczych staje się coraz bardziej realne. <span class="hl">Zabić kochankę czy uwolnić chłopaka?</span></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== BOHATEROWIE ===================== -->
+<section id="zespol" class="section section--team">
+  <div class="section__header">
+    <div class="section__num mono">03 / ZESPÓŁ</div>
+    <h2 class="section__title serif" data-split-words>Biuro Poszukiwań · <span class="accent">KGP</span></h2>
+    <div class="section__sub mono">REJESTR ▸ OSOBY UPOWAŻNIONE DO PROWADZENIA POSTĘPOWANIA</div>
+  </div>
+
+  <div class="team">
+    <article class="dossier" data-reveal data-tilt>
+      <div class="dossier__head mono">
+        <span class="dossier__code">001 · KGP/BP</span>
+        <span class="dossier__rank">DOWODZĄCA</span>
+      </div>
+      <div class="dossier__portrait">
+        <div class="dossier__portrait-bg"></div>
+        <svg class="dossier__fingerprint" viewBox="0 0 100 100" aria-hidden="true">
+          <defs><clipPath id="fp1"><rect x="10" y="10" width="80" height="80"/></clipPath></defs>
+          <g clip-path="url(#fp1)" fill="none" stroke="currentColor" stroke-width=".6" opacity=".55">
+            <path d="M50 18 Q70 18 78 36 Q82 50 76 64 Q66 84 50 84 Q34 84 24 64 Q18 50 22 36 Q30 18 50 18Z"/>
+            <path d="M50 24 Q66 26 73 40 Q76 50 72 60 Q63 78 50 78 Q37 78 28 60 Q24 50 27 40 Q34 26 50 24Z"/>
+            <path d="M50 30 Q62 32 68 44 Q70 50 67 56 Q60 70 50 70 Q40 70 33 56 Q30 50 32 44 Q38 32 50 30Z"/>
+            <path d="M50 36 Q58 38 62 46 Q63 50 61 54 Q57 62 50 62 Q43 62 39 54 Q37 50 38 46 Q42 38 50 36Z"/>
+            <path d="M50 42 Q55 44 56 48 Q57 50 55 53 Q53 56 50 56 Q47 56 45 53 Q43 50 44 48 Q45 44 50 42Z"/>
+          </g>
+          <g fill="var(--liber)">
+            <circle cx="50" cy="46" r=".9"/><circle cx="44" cy="52" r=".9"/><circle cx="56" cy="54" r=".9"/><circle cx="50" cy="60" r=".9"/>
+          </g>
+        </svg>
+        <div class="dossier__portrait-tag mono">SUBJ.001 · MATCHED</div>
+        <div class="dossier__crosshair">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="dossier__chart mono" aria-hidden="true">
+          <span class="dossier__chart-k">RANK</span><span class="dossier__chart-v">PODKOMISARZ</span>
+          <span class="dossier__chart-k">SVC</span><span class="dossier__chart-v">14 LAT</span>
+          <span class="dossier__chart-k">STATUS</span><span class="dossier__chart-v"><i></i> ACTIVE</span>
+        </div>
+      </div>
+      <div class="dossier__body">
+        <h3 class="dossier__name serif">Beta Sroka</h3>
+        <div class="dossier__role mono">podkomisarz · 38 lat · dowodzi BP</div>
+        <p class="serif">Samotna. Lata temu jako jedyna wyszła cało z wypadku rodzinnego. „Syndrom ocalałego” nie pozwala jej w pełni cieszyć się życiem. Naturalna liderka, zawsze po stronie prawdy — nawet gdy boli.</p>
+        <div class="dossier__tags mono">
+          <span>anhedonia</span><span>liderka</span><span>prawda</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="dossier" data-reveal data-tilt>
+      <div class="dossier__head mono">
+        <span class="dossier__code">002 · KGP/CYBER</span>
+        <span class="dossier__rank">IT · KORPUS CYWILNY</span>
+      </div>
+      <div class="dossier__portrait">
+        <div class="dossier__portrait-bg dossier__portrait-bg--matrix"></div>
+        <svg class="dossier__fingerprint" viewBox="0 0 100 100" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width=".55" opacity=".5" font-family="JetBrains Mono">
+            <text x="12" y="22" font-size="3.5" fill="currentColor">0xCAFE_BEEF · LIBER://node-002 · OK</text>
+            <text x="12" y="30" font-size="3.5" fill="currentColor">trace_route(target=GAJA)</text>
+            <text x="12" y="38" font-size="3.5" fill="currentColor">handshake [ssh] 22ms — 38ms</text>
+            <text x="12" y="46" font-size="3.5" fill="currentColor">key fp 5C:9A:7E:01:DE:00:42</text>
+            <text x="12" y="54" font-size="3.5" fill="currentColor">SEEK ▸ minister.son.alive=1</text>
+            <text x="12" y="62" font-size="3.5" fill="currentColor">RX 1.2GiB · TX 0.4GiB</text>
+            <text x="12" y="70" font-size="3.5" fill="currentColor">// uptime 99.991%</text>
+            <text x="12" y="78" font-size="3.5" fill="currentColor">err: none · warn: 2</text>
+          </g>
+        </svg>
+        <div class="dossier__portrait-tag mono">SUBJ.002 · TRACED</div>
+        <div class="dossier__crosshair">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="dossier__chart mono" aria-hidden="true">
+          <span class="dossier__chart-k">RANK</span><span class="dossier__chart-v">CYWIL</span>
+          <span class="dossier__chart-k">SVC</span><span class="dossier__chart-v">9 LAT</span>
+          <span class="dossier__chart-k">STATUS</span><span class="dossier__chart-v"><i></i> ONLINE</span>
+        </div>
+      </div>
+      <div class="dossier__body">
+        <h3 class="dossier__name serif">Konrad Weber<span class="dossier__alias"> · „Cyber Dred”</span></h3>
+        <div class="dossier__role mono">36 lat · cyberprzestępczość</div>
+        <p class="serif">Wiecznie uśmiechnięty, pozytywnie usposobiony. Pacyfista o mocnym kręgosłupie moralnym, choć dla dobra wyższego nie zawaha się shakować. Pije yerbę. Zabiega o względy Bety.</p>
+        <div class="dossier__tags mono">
+          <span>cyber</span><span>pacyfista</span><span>yerba</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="dossier" data-reveal data-tilt>
+      <div class="dossier__head mono">
+        <span class="dossier__code">003 · KGP/KRYMINALNY</span>
+        <span class="dossier__rank">ZASTĘPCZYNI DYR.</span>
+      </div>
+      <div class="dossier__portrait">
+        <div class="dossier__portrait-bg dossier__portrait-bg--redact"></div>
+        <svg class="dossier__fingerprint" viewBox="0 0 100 100" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width=".5" opacity=".4">
+            <path d="M14 26 H40 M44 26 H86"/><path d="M14 32 H30 M34 32 H70 M74 32 H86"/>
+            <path d="M14 38 H86"/><path d="M14 44 H60 M64 44 H86"/>
+            <path d="M14 56 H40 M44 56 H86"/><path d="M14 62 H20 M24 62 H86"/>
+            <path d="M14 68 H86"/><path d="M14 74 H50 M54 74 H86"/>
+          </g>
+          <g fill="#1a1f1a" opacity=".95">
+            <rect x="14" y="24" width="26" height="4"/>
+            <rect x="34" y="30" width="36" height="4"/>
+            <rect x="20" y="60" width="48" height="4"/>
+            <rect x="38" y="72" width="22" height="4"/>
+          </g>
+          <text x="58" y="50" font-family="JetBrains Mono" font-size="6" fill="var(--evidence)" font-weight="700">REDACTED</text>
+        </svg>
+        <div class="dossier__portrait-tag mono">SUBJ.003 · ABW HOLD</div>
+        <div class="dossier__crosshair">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="dossier__chart mono" aria-hidden="true">
+          <span class="dossier__chart-k">RANK</span><span class="dossier__chart-v">MŁ. INSP.</span>
+          <span class="dossier__chart-k">SVC</span><span class="dossier__chart-v">22 LAT</span>
+          <span class="dossier__chart-k">STATUS</span><span class="dossier__chart-v dossier__chart-v--hold"><i></i> HOLD</span>
+        </div>
+      </div>
+      <div class="dossier__body">
+        <h3 class="dossier__name serif">Grażyna Chojecka</h3>
+        <div class="dossier__role mono">młodsza inspektor · pion kryminalny</div>
+        <p class="serif">Znała ministra z lat licealnych. Na własną rękę prowadzi rozeznanie siatki porywaczy — do czasu zatrzymania jej przez ABW pod zarzutem współudziału w grupie terrorystycznej. Działała w MARSie.</p>
+        <div class="dossier__tags mono">
+          <span>MARS</span><span>ABW</span><span>etyka</span>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- Aspekty problemtyki -->
+  <div class="aspects">
+    <div class="aspects__head mono"><span class="aspects__line"></span><span>POBOCZE ŚLEDZTWA · ASPEKTY</span><span class="aspects__line"></span></div>
+    <div class="aspects__grid">
+      <div class="aspects__card" data-reveal>
+        <div class="aspects__icon" aria-hidden="true">
+          <svg viewBox="0 0 40 40" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.2">
+            <rect x="10" y="6" width="20" height="28" rx="2"/>
+            <path d="M16 14h8M16 20h8M16 26h5"/>
+          </svg>
+        </div>
+        <h3 class="aspects__title">Biznes kosmetyczny</h3>
+        <p>W jaki sposób bada się kosmetyki, leki, suplementy. Na etykiecie nie zawsze jest prawda.</p>
+      </div>
+      <div class="aspects__card" data-reveal>
+        <div class="aspects__icon" aria-hidden="true">
+          <svg viewBox="0 0 40 40" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.2">
+            <path d="M8 32V14l12-6 12 6v18"/>
+            <path d="M14 32V22h12v10"/>
+          </svg>
+        </div>
+        <h3 class="aspects__title">Lobby futrzarskie</h3>
+        <p>Wielkopolska lat 90. Eksport norek i lisów wciąż żyje, choć nie w naszej szafie.</p>
+      </div>
+      <div class="aspects__card" data-reveal>
+        <div class="aspects__icon" aria-hidden="true">
+          <svg viewBox="0 0 40 40" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.2">
+            <circle cx="20" cy="20" r="12"/>
+            <path d="M14 20l4 4 8-8"/>
+          </svg>
+        </div>
+        <h3 class="aspects__title">Laboratoria badawcze</h3>
+        <p>Testy odbywają się — pytanie, gdzie i pod jaką flagą. Outsourcing okrucieństwa.</p>
+      </div>
+      <div class="aspects__card" data-reveal>
+        <div class="aspects__icon" aria-hidden="true">
+          <svg viewBox="0 0 40 40" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.2">
+            <rect x="6" y="10" width="28" height="20" rx="2"/>
+            <path d="M12 16h16M12 22h10"/>
+          </svg>
+        </div>
+        <h3 class="aspects__title">Cyber-atak</h3>
+        <p>Laboratorium jakości wody i produktów spożywczych staje się celem. Eskalacja realna.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CYTATY ===================== -->
+<section id="cytaty" class="section section--quotes">
+  <div class="section__header">
+    <div class="section__num mono">04 / TRANSKRYPT</div>
+    <h2 class="section__title serif" data-split-words>Z taśmy <span class="accent">przesłuchań</span></h2>
+    <div class="section__sub mono">RECORDED · CHANNEL 02 · ZACHOWAJ POUFNOŚĆ</div>
+  </div>
+
+  <div class="quotes">
+    <figure class="quote quote--big" data-reveal>
+      <div class="quote__meta mono">▶ REC · 00:03:11 · MARS · LAT 90.</div>
+      <blockquote class="serif">
+        Działanie metodą klucza francuskiego <em>(monkeywrenching)</em> wkładanego w szprychy niszczącego naturę przemysłu jest jak więź z <span class="accent">Matką Gają</span>. Święte i wieczne przymierze wojownika ze źródłem życia.
+      </blockquote>
+      <figcaption class="mono">— ANIMALIŚCI BĘDĄ WALCZYĆ DO SKUTKU</figcaption>
+    </figure>
+
+    <figure class="quote" data-reveal>
+      <div class="quote__meta mono">▶ REC · 00:08:42</div>
+      <blockquote class="serif">
+        Życie jest przede wszystkim poznawaniem zła. Zła pod różną postacią i w różnym natężeniu. Żyjemy, by się z nim zmierzyć — czyniąc, by wiedzieć, że czynić nie należy. Doznawać, by zapobiegać. <em>By uwalniać z klatek.</em>
+      </blockquote>
+    </figure>
+
+    <figure class="quote quote--accent" data-reveal>
+      <div class="quote__meta mono">▶ REC · 00:14:00 · LIS</div>
+      <blockquote class="serif">
+        Krem ze śluzem ślimaka? Że sobie chodzi po listku, a człowiek tylko zbiera? Zwierzęta cierpią dla twojego pachnidła. <span class="hl">Człowieku, zastanów się.</span>
+      </blockquote>
+    </figure>
+
+    <figure class="quote" data-reveal>
+      <div class="quote__meta mono">▶ REC · 00:21:55</div>
+      <blockquote class="serif">
+        System jest maszyną do łamania odstających, by ich dopasować do ogółu. A jednostka, jako uposażona w kręgosłup moralny, stająca na granicy dobra i zła, powinna pójść za dobrem — <em>nawet kosztem systemu.</em>
+      </blockquote>
+    </figure>
+
+    <figure class="quote quote--final" data-reveal>
+      <div class="quote__meta mono">▶ REC · 00:33:07 · ZAKOŃCZENIE TAŚMY</div>
+      <blockquote class="serif">
+        <span class="quote__hugetext">Ludzie bardziej boją się bólu,<br/>niż śmierci. <em>Czyli zwierzęta też.</em></span>
+      </blockquote>
+    </figure>
+  </div>
+</section>
+
+<!-- ===================== OPINIE ===================== -->
+<section id="opinie" class="section section--press">
+  <div class="section__header">
+    <div class="section__num mono">05 / PRE-CZYTELNICY</div>
+    <h2 class="section__title serif" data-split-words>Pierwsze <span class="accent">głosy</span> z recenzji</h2>
+    <div class="section__sub mono">RECEIVED ▸ ARCHIVE · WERYFIKOWANE</div>
+  </div>
+
+  <div class="press">
+    <article class="press__card" data-reveal data-tilt>
+      <div class="press__badge mono">BOOKSTAGRAM · PANDA Z KSIĄŻKĄ</div>
+      <p class="press__text serif">„Treść, warsztat, temat oraz poprowadzenie akcji to jest <em>rasowy kryminał klasy premium</em>. Nie zwykła rozrywka na średnim poziomie, a pod wieloma względami inteligentna, pozostająca na dłużej w pamięci czytelnika opowieść o bolączkach tego świata.”</p>
+      <footer class="press__author mono">— Joanna Ćwiertka</footer>
+    </article>
+
+    <article class="press__card" data-reveal data-tilt>
+      <div class="press__badge mono">BLOG · CZYTELNICZY SAD</div>
+      <p class="press__text serif">„To jest <em>więcej, niż rozrywka</em>. Akcja oraz styl pierwsza klasa. Nie mam żadnych zastrzeżeń ani uwag. Podjęty temat na czasie i mocny. Myślę, że może dać do myślenia i stać się podstawą dyskusji społecznej. Ogrom wiedzy. Brawo!”</p>
+      <footer class="press__author mono">— Sylwia Albin</footer>
+    </article>
+
+    <article class="press__card" data-reveal data-tilt>
+      <div class="press__badge mono">BOOKSTAGRAM · MISERA.BLE</div>
+      <p class="press__text serif">„Medianę bardzo dobrze się czyta, fabularnie <em>niesamowita!</em> Po przeczytaniu po prostu myślę nad tym, że to nie może przejść bez echa. Przydałoby się wielkie „bum” wokół książki, bo zasługuje. Tematyka, postacie, cała otoczka — <em>mistrzostwo</em>.”</p>
+      <footer class="press__author mono">— Marta Dobrzyńska</footer>
+    </article>
+  </div>
+</section>
+
+<!-- ===================== TRYLOGIA ===================== -->
+<section id="trylogia" class="section section--trilogy">
+  <div class="section__header">
+    <div class="section__num mono">06 / TRYLOGIA</div>
+    <h2 class="section__title serif" data-split-words>Cykl: <span class="accent">Biuro Poszukiwań</span></h2>
+    <div class="section__sub mono">TRZY TOMY · TRZY ŚLEDZTWA · TRZY UPADKI</div>
+  </div>
+
+  <div class="trilogy">
+    <article class="tome tome--active" data-reveal>
+      <div class="tome__rail">
+        <span class="tome__roman mono">I</span>
+        <span class="tome__line"></span>
+      </div>
+      <div class="tome__body">
+        <h3 class="tome__title serif">LIBER</h3>
+        <div class="tome__sub mono">Tom I · PREMIERA 09.06.2026</div>
+        <p>Eko-bojówki, porwanie syna ministra, transmisje live i moralny miecz obosieczny. Pierwsza sprawa zespołu Bety Sroki.</p>
+        <div class="tome__pill mono">▸ DOSTĘPNY W PRZEDSPRZEDAŻY</div>
+      </div>
+    </article>
+
+    <article class="tome" data-reveal>
+      <div class="tome__rail">
+        <span class="tome__roman mono">II</span>
+        <span class="tome__line"></span>
+      </div>
+      <div class="tome__body">
+        <h3 class="tome__title serif">EXTREMA</h3>
+        <div class="tome__sub mono">Tom II · WKRÓTCE</div>
+        <p>Human Safari. Organizacja Life Up i modelowanie decyzyjności. Filip Ungier podpisał kontrakt na własne życie — wygra, jeśli ucieknie.</p>
+        <div class="tome__pill mono">▸ W PRZYGOTOWANIU</div>
+      </div>
+    </article>
+
+    <article class="tome" data-reveal>
+      <div class="tome__rail">
+        <span class="tome__roman mono">III</span>
+        <span class="tome__line"></span>
+      </div>
+      <div class="tome__body">
+        <h3 class="tome__title serif">KOLAPS</h3>
+        <div class="tome__sub mono">Tom III · WKRÓTCE</div>
+        <p>Bałkany, odradzający się faszyzm, atak na światłowody Bałtyku. Hajra — jedyna ocalała z masakry pod Srebrenicą.</p>
+        <div class="tome__pill mono">▸ W PRZYGOTOWANIU</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ===================== FORMATY / PRE-ORDER ===================== -->
+<section id="formaty" class="section section--formats">
+  <div class="section__header">
+    <div class="section__num mono">07 / WYBÓR NOŚNIKA</div>
+    <h2 class="section__title serif" data-split-words>Wydania <span class="accent">LIBER</span></h2>
+    <div class="section__sub mono">PRE-ORDER · WYSYŁKA OD 09.06.2026</div>
+  </div>
+
+  <div class="formats">
+    <article class="fmt" data-reveal data-tilt>
+      <div class="fmt__badge mono">01 · DRUK</div>
+      <div class="fmt__cover">
+        <img src="assets/cover-paperback.png" alt="LIBER — wydanie miękkie" loading="lazy" decoding="async" />
+        <span class="fmt__shadow"></span>
+      </div>
+      <h3 class="fmt__title serif">Miękka oprawa</h3>
+      <div class="fmt__meta mono">PAPIER · OFFSET · 360 STR. (PLAN)</div>
+      <p>Klasyczne wydanie. Przyjemne w dłoni, gotowe na półkę z kryminałami klasy premium.</p>
+      <a href="mailto:joanbielak@gmail.com?subject=Pre-order%20LIBER%20%E2%80%94%20mi%C4%99kka%20oprawa&body=Dzie%C5%84%20dobry%2C%0A%0Aprosz%C4%99%20o%20rezerwacj%C4%99%20egzemplarza%20LIBER%20w%20wydaniu%20mi%C4%99kkim%20(premiera%2009.06.2026).%0A%0AImi%C4%99%20i%20nazwisko%3A%20%0AAdres%20wysy%C5%82ki%3A%20%0ATelefon%20kontaktowy%3A%20%0AIlo%C5%9B%C4%87%3A%201" class="btn btn--primary mono" data-magnetic>
+        <span class="btn__label">Zamów wydanie</span>
+        <span class="btn__shine"></span>
+      </a>
+    </article>
+
+    <article class="fmt fmt--featured" data-reveal data-tilt>
+      <div class="fmt__ribbon mono">BESTSELLER · POLECANE</div>
+      <div class="fmt__badge mono">02 · CYFROWE</div>
+      <div class="fmt__cover">
+        <img src="assets/cover-ebook.png" alt="LIBER — ebook" loading="lazy" decoding="async" />
+        <span class="fmt__shadow"></span>
+      </div>
+      <h3 class="fmt__title serif">E-book</h3>
+      <div class="fmt__meta mono">EPUB · MOBI · NATYCHMIASTOWO</div>
+      <p>Czytaj na każdym urządzeniu. Tom I dostarczony w dniu premiery prosto na czytnik.</p>
+      <a href="mailto:joanbielak@gmail.com?subject=Pre-order%20LIBER%20%E2%80%94%20e-book&body=Dzie%C5%84%20dobry%2C%0A%0Aprosz%C4%99%20o%20rezerwacj%C4%99%20wersji%20e-book%20LIBER%20(premiera%2009.06.2026).%0A%0AImi%C4%99%20i%20nazwisko%3A%20%0AE-mail%20do%20dostawy%3A%20%0AFormat%20preferowany%20(EPUB%2FMOBI)%3A%20" class="btn btn--primary mono" data-magnetic>
+        <span class="btn__label">Zamów ebook</span>
+        <span class="btn__shine"></span>
+      </a>
+    </article>
+
+    <article class="fmt" data-reveal data-tilt>
+      <div class="fmt__badge mono">03 · AUDIO</div>
+      <div class="fmt__cover">
+        <img src="assets/cover-audio.png" alt="LIBER — audiobook" loading="lazy" decoding="async" />
+        <span class="fmt__shadow"></span>
+      </div>
+      <h3 class="fmt__title serif">Audiobook</h3>
+      <div class="fmt__meta mono">~ 11H · STUDYJNA REALIZACJA</div>
+      <p>Słuchaj w drodze, biegając, gotując. Pełna interpretacja lektorska.</p>
+      <div class="fmt__wave" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <a href="mailto:joanbielak@gmail.com?subject=Pre-order%20LIBER%20%E2%80%94%20audiobook&body=Dzie%C5%84%20dobry%2C%0A%0Aprosz%C4%99%20o%20rezerwacj%C4%99%20audiobooka%20LIBER%20(premiera%2009.06.2026).%0A%0AImi%C4%99%20i%20nazwisko%3A%20%0AE-mail%20do%20dostawy%3A%20%0APreferowana%20platforma%20(MP3%2FStreaming)%3A%20" class="btn btn--primary mono" data-magnetic>
+        <span class="btn__label">Zamów audio</span>
+        <span class="btn__shine"></span>
+      </a>
+    </article>
+  </div>
+</section>
+
+<!-- ===================== PREORDER FORM ===================== -->
+<section id="zapisy" class="section section--preorder" aria-labelledby="preorder-title">
+  <div class="preorder-wrap">
+    <div class="preorder__left" data-reveal>
+      <div class="section__num mono">// LISTA REZERWACYJNA</div>
+      <h2 id="preorder-title" class="section__title serif">Zarezerwuj <span class="accent">imiennie</span></h2>
+      <p class="preorder__lede">Powiadomimy Cię w dniu premiery i zatrzymamy egzemplarz na podany adres. Bez płatności online — kontakt potwierdzający trafia bezpośrednio do autorki.</p>
+      <ul class="preorder__perks mono">
+        <li><span class="perk-dot"></span> Powiadomienie e-mail w dniu premiery</li>
+        <li><span class="perk-dot"></span> Wybór formatu i miejsca odbioru</li>
+        <li><span class="perk-dot"></span> Możliwość dedykacji</li>
+        <li><span class="perk-dot"></span> Anulowanie do dnia premiery</li>
+      </ul>
+    </div>
+
+    <form class="preorder" action="mailto:joanbielak@gmail.com" method="post" enctype="text/plain" data-reveal>
+      <div class="preorder__row">
+        <label class="preorder__field">
+          <span class="preorder__label mono">Imię i nazwisko</span>
+          <input type="text" name="imie" autocomplete="name" required />
+        </label>
+        <label class="preorder__field">
+          <span class="preorder__label mono">E-mail</span>
+          <input type="email" name="email" autocomplete="email" required />
+        </label>
+      </div>
+      <div class="preorder__row">
+        <label class="preorder__field">
+          <span class="preorder__label mono">Telefon (opcjonalnie)</span>
+          <input type="tel" name="telefon" autocomplete="tel" />
+        </label>
+        <label class="preorder__field">
+          <span class="preorder__label mono">Format</span>
+          <select name="format" required>
+            <option value="miekka">Miękka oprawa</option>
+            <option value="ebook">E-book</option>
+            <option value="audiobook">Audiobook</option>
+          </select>
+        </label>
+      </div>
+      <label class="preorder__field">
+        <span class="preorder__label mono">Uwagi (dedykacja, ilość, adres odbioru)</span>
+        <textarea name="uwagi" rows="3"></textarea>
+      </label>
+      <div class="preorder__bottom">
+        <label class="preorder__check">
+          <input type="checkbox" name="zgoda" required />
+          <span>Zgadzam się na kontakt e-mail w sprawie rezerwacji.</span>
+        </label>
+        <button type="submit" class="btn btn--primary mono" data-magnetic>
+          <span class="btn__label">Wyślij rezerwację</span>
+          <span class="btn__shine"></span>
+        </button>
+      </div>
+      <p class="preorder__note mono">Wysłanie otworzy Twój klient pocztowy. Alternatywnie: <a href="mailto:joanbielak@gmail.com">napisz wprost</a>.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ===================== AUTORKA ===================== -->
+<section id="autorka" class="section section--author">
+  <div class="author">
+    <div class="author__col author__col--text" data-reveal>
+      <div class="author__num mono">08 / AUTORKA</div>
+      <h2 class="author__title serif">J.F. <span class="accent">Bielak</span></h2>
+      <p class="author__bio serif">Autorka trylogii kryminalnej <em>Biuro Poszukiwań KGP</em>. Pisze nie tylko o intrydze — w jej powieściach kryminał spotyka aktualne zjawiska społeczne. Pokazuje świadomie konstruowane dylematy moralne, mechanizmy radykalizacji i pęknięcia, których nie widać z poziomu codziennych newsów.</p>
+      <p class="author__bio serif">LIBER jest pierwszym tomem cyklu. Po nim — <em>EXTREMA</em> (human safari, kontrola umysłu) i <em>KOLAPS</em> (post-jugo, faszyzm, sieci światłowodów).</p>
+      <div class="author__contact mono">
+        <a href="mailto:joanbielak@gmail.com" data-magnetic>joanbielak@gmail.com</a>
+        <span class="author__sep">·</span>
+        <a href="tel:+48796756966" data-magnetic>+48 796 756 966</a>
+      </div>
+    </div>
+    <div class="author__col author__col--mark" data-reveal>
+      <div class="author__plate">
+        <div class="author__plate-tag mono">SIGNATURE</div>
+        <div class="author__plate-name serif">J.F. Bielak</div>
+        <div class="author__plate-line"></div>
+        <div class="author__plate-sub mono">CYKL · BIURO POSZUKIWAŃ KGP</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FINAL CTA ===================== -->
+<section class="section section--final">
+  <div class="final">
+    <div class="final__motto serif" data-split-words>
+      <span>Otwórz</span> <span>akta.</span> <span>Wybierz</span> <span>stronę.</span>
+    </div>
+    <a href="#formaty" class="btn btn--primary btn--xl mono" data-magnetic>
+      <span class="btn__label">Wybierz wydanie i zarezerwuj</span>
+      <span class="btn__shine"></span>
+    </a>
+    <div class="final__date mono">PREMIERA · 09.06.2026 · WYDAWNICTWO METAFORA</div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="foot">
+  <div class="foot__inner">
+    <div class="foot__brand">
+      <div class="foot__title serif">LIBER</div>
+      <div class="foot__sub mono">J.F. BIELAK · TOM I · 2026</div>
+    </div>
+    <div class="foot__publisher">
+      <a href="https://www.wydawnictwometafora.pl" target="_blank" rel="noopener">
+        <img src="assets/publisher-logo.png" alt="Wydawnictwo Metafora" loading="lazy" decoding="async" />
+      </a>
+    </div>
+    <div class="foot__contact mono">
+      <a href="mailto:joanbielak@gmail.com">joanbielak@gmail.com</a>
+      <a href="tel:+48796756966">+48 796 756 966</a>
+      <span>© 2026 · WSZELKIE PRAWA ZASTRZEŻONE</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
