@@ -303,6 +303,39 @@ const NO_HOVER = matchMedia('(hover: none), (max-width: 900px)').matches;
   });
 })();
 
+/* -------- VIDEO sound toggle (autoplay+muted, user activates audio) -------- */
+(() => {
+  const btn = document.querySelector('[data-sound]');
+  const video = document.querySelector('[data-video]');
+  if (!btn || !video) return;
+  const iconOff = btn.querySelector('[data-sound-off]');
+  const iconOn  = btn.querySelector('[data-sound-on]');
+  const label   = btn.querySelector('[data-sound-label]');
+
+  const setMuted = (m) => {
+    video.muted = m;
+    iconOff.style.display = m ? '' : 'none';
+    iconOn.style.display  = m ? 'none' : '';
+    label.textContent = m ? 'Włącz dźwięk' : 'Wycisz';
+    btn.setAttribute('aria-label', m ? 'Włącz dźwięk' : 'Wycisz');
+  };
+
+  btn.addEventListener('click', () => {
+    if (video.muted) {
+      video.muted = false;
+      // Make sure it's actually playing after gesture
+      const p = video.play();
+      if (p && p.catch) p.catch(() => {});
+    } else {
+      video.muted = true;
+    }
+    setMuted(video.muted);
+  });
+
+  // Auto-mute if user uses native controls to mute
+  video.addEventListener('volumechange', () => setMuted(video.muted));
+})();
+
 /* -------- PAUSE heavy animations when out of viewport (saving CPU) -------- */
 (() => {
   if (REDUCED) return;

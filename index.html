@@ -225,9 +225,23 @@
       <div class="syn__num mono">02 / FABUŁA</div>
       <h2 class="syn__title serif">Wojna<br/>wszystkich<br/>ze wszystkimi.</h2>
       <p class="syn__sub mono">Warszawa. Plac przy stacji Metro Centrum. Wielki telebim wyświetla kolejne postulaty.</p>
-      <video class="syn__video" autoplay muted loop playsinline preload="metadata" poster="assets/forest-bg.png">
-        <source src="assets/motto-clip.mp4" type="video/mp4" />
-      </video>
+      <div class="syn__videowrap">
+        <video class="syn__video" autoplay muted loop playsinline controls controlslist="nodownload" preload="metadata" poster="assets/forest-bg.png" data-video>
+          <source src="assets/motto-clip.mp4" type="video/mp4" />
+          Twoja przeglądarka nie obsługuje wideo. <a href="assets/motto-clip.mp4">Pobierz klip</a>.
+        </video>
+        <button class="syn__sound mono" type="button" data-sound aria-label="Włącz dźwięk">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" data-sound-off>
+            <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+            <path d="M23 9l-6 6M17 9l6 6"/>
+          </svg>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" data-sound-on style="display:none">
+            <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+            <path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14"/>
+          </svg>
+          <span data-sound-label>Włącz dźwięk</span>
+        </button>
+      </div>
     </div>
 
     <div class="syn__story">
