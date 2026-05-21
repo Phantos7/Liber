@@ -787,6 +787,9 @@ html.js .loader { display: flex; }
   position: sticky; top: 100px;
   align-self: start;
 }
+@media (max-width: 900px) {
+  .syn__stickycol { position: static; top: auto; }
+}
 .syn__num { font-size: 11px; color: var(--liber); margin-bottom: 16px; }
 .syn__title {
   font-size: clamp(40px, 6vw, 76px);
