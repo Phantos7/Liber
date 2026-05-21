@@ -336,6 +336,48 @@ const NO_HOVER = matchMedia('(hover: none), (max-width: 900px)').matches;
   video.addEventListener('volumechange', () => setMuted(video.muted));
 })();
 
+/* -------- TRAILER sound toggle + timecode -------- */
+(() => {
+  const btn = document.querySelector('[data-trailer-sound]');
+  const video = document.querySelector('[data-trailer]');
+  const tc = document.querySelector('[data-trailer-tc]');
+  if (!video) return;
+
+  if (btn) {
+    const iconOff = btn.querySelector('[data-trailer-off]');
+    const iconOn  = btn.querySelector('[data-trailer-on]');
+    const label   = btn.querySelector('[data-trailer-label]');
+    const sync = (m) => {
+      iconOff.style.display = m ? '' : 'none';
+      iconOn.style.display  = m ? 'none' : '';
+      label.textContent = m ? 'Włącz dźwięk' : 'Wycisz';
+      btn.setAttribute('aria-label', m ? 'Włącz dźwięk zwiastuna' : 'Wycisz zwiastun');
+    };
+    btn.addEventListener('click', () => {
+      video.muted = !video.muted;
+      if (!video.muted) {
+        const p = video.play();
+        if (p && p.catch) p.catch(() => {});
+      }
+    });
+    video.addEventListener('volumechange', () => sync(video.muted));
+    sync(video.muted);
+  }
+
+  if (tc) {
+    const pad = v => String(v).padStart(2, '0');
+    const fmt = s => `${pad(Math.floor(s / 60))}:${pad(Math.floor(s % 60))}`;
+    const upd = () => {
+      const cur = isNaN(video.currentTime) ? 0 : video.currentTime;
+      const dur = isNaN(video.duration) ? 0 : video.duration;
+      tc.textContent = `${fmt(cur)} / ${fmt(dur)}`;
+    };
+    video.addEventListener('timeupdate', upd);
+    video.addEventListener('loadedmetadata', upd);
+    upd();
+  }
+})();
+
 /* -------- PAUSE heavy animations when out of viewport (saving CPU) -------- */
 (() => {
   if (REDUCED) return;
