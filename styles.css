@@ -798,7 +798,7 @@ html.js .loader { display: flex; }
 .syn__videowrap {
   position: relative;
   width: 100%;
-  max-width: 460px;
+  max-width: 380px;
   margin: 0 auto;
   border: 1px solid rgba(200,230,46,.18);
   background: #000;
@@ -815,8 +815,8 @@ html.js .loader { display: flex; }
 .syn__video {
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 5;          /* natywny aspekt klipu — bez cropowania */
-  object-fit: contain;          /* na wszelki wypadek — letterbox czarny */
+  aspect-ratio: 9 / 16;         /* natywny aspekt teasera vidLIBER */
+  object-fit: contain;
   background: #000;
   filter: contrast(1.04) saturate(.92);
 }
