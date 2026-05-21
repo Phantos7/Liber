@@ -814,8 +814,8 @@ html.js .loader { display: flex; }
 .syn__video {
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;         /* horyzontalny layout — jak w v1 */
-  object-fit: cover;            /* przycina z góry/dołu klipu 1:1 */
+  aspect-ratio: 1 / 1;          /* kwadrat — natywny aspekt klipu 1080×1080 */
+  object-fit: contain;
   background: #000;
   filter: contrast(1.04) saturate(.92);
 }
