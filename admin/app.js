@@ -1,28 +1,85 @@
 /* =====================================================
-   LIBER — panel edycji (app.js)
+   LIBER — panel edycji (app.js) — iteracja 2
    ===================================================== */
 
 const REPO = 'Phantos7/Liber';
 const BRANCH = 'main';
 const FILE_PATH = 'index.html';
 const API = 'https://api.github.com';
+const DRAFT_PREFIX = 'liber-draft-';
+const DRAFT_DEBOUNCE = 500;
+const MAX_DRAFTS = 5;
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
 const SECTION_META = {
   hero:     { label: 'Powitanie',           sub: 'Hero · tytuł, motto, okładka, countdown' },
-  ticker:   { label: 'Pasek postulatów',    sub: 'Ticker · przewijające hasła' },
-  sprawa:   { label: 'Akta sprawy',         sub: '01 / dossier · abstract · cytat' },
-  synopsis: { label: 'Fabuła',              sub: '02 / streszczenie po blokach' },
-  zespol:   { label: 'Bohaterowie',         sub: '03 / Beta, Konrad, Grażyna + aspekty śledztwa' },
-  cytaty:   { label: 'Cytaty z transkryptu',sub: '04 / fragmenty taśmy' },
-  opinie:   { label: 'Opinie',              sub: '05 / pre-czytelnicy' },
-  trylogia: { label: 'Trylogia',            sub: '06 / LIBER · EXTREMA · KOLAPS' },
-  formaty:  { label: 'Wydania (pre-order)', sub: '07 / miękka · e-book · audiobook' },
-  zapisy:   { label: 'Formularz rezerwacji',sub: '// lista zapisów' },
-  autorka:  { label: 'O autorce',           sub: '08 / J.F. Bielak' },
-  final:    { label: 'Wezwanie końcowe',    sub: 'CTA · zarezerwuj egzemplarz' },
+  ticker:   { label: 'Pasek postulatów',    sub: 'Postulaty przewijające się na górze strony' },
+  sprawa:   { label: 'Akta sprawy',         sub: 'Dossier · abstrakt · cytat motywu' },
+  synopsis: { label: 'Fabuła',              sub: 'Streszczenie po blokach' },
+  zespol:   { label: 'Bohaterowie',         sub: 'Beta, Konrad, Grażyna + aspekty śledztwa' },
+  cytaty:   { label: 'Cytaty z transkryptu',sub: 'Fragmenty taśmy' },
+  opinie:   { label: 'Opinie',              sub: 'Recenzje pre-czytelników' },
+  trylogia: { label: 'Trylogia',            sub: 'LIBER · EXTREMA · KOLAPS' },
+  formaty:  { label: 'Wydania (pre-order)', sub: 'Miękka · e-book · audiobook' },
+  zapisy:   { label: 'Formularz rezerwacji',sub: 'Lista zapisów' },
+  autorka:  { label: 'O autorce',           sub: 'J.F. Bielak — bio i kontakt' },
+  final:    { label: 'Wezwanie końcowe',    sub: 'CTA — Otwórz akta, zarezerwuj' },
+};
+
+// Etykiety per sekcja + selektor — zostawiam główne pola z czytelnymi nazwami
+const SECTION_LABELS = {
+  hero: {
+    '.hero__eyebrow span:not(.hero__eyebrow-sep):nth-of-type(1)': 'Etykieta nagłówka (lewa)',
+    '.hero__eyebrow span:not(.hero__eyebrow-sep):nth-of-type(3)': 'Etykieta nagłówka (prawa)',
+    '.hero__motto': 'Motto pod tytułem',
+    '.hero__lede': 'Krótki opis',
+    '.live-badge': 'Pasek LIVE (transmisja)',
+    '.hero__packshot-tag': 'Pieczęć przy okładce',
+    '.hero__packshot-code': 'Kod przy okładce',
+    '.countdown__label': 'Nagłówek odliczania',
+    '.btn--primary .btn__label': 'Przycisk główny (Zarezerwuj…)',
+    '.btn--ghost span': 'Przycisk dodatkowy (Otwórz akta…)',
+  },
+  sprawa: {
+    '.section__num': 'Numer sekcji (01 / AKTA)',
+    '.case__sub': 'Klauzula (POUFNE…)',
+    '.case__filehead span:first-child': 'Nagłówek dossier (DOSSIER ▸ ABSTRACT)',
+    '.case__stamp': 'Pieczęć (CLASSIFIED)',
+    '.case__pullsig': 'Podpis pod cytatem motywu',
+  },
+  synopsis: {
+    '.syn__num': 'Numer sekcji (02 / FABUŁA)',
+    '.syn__title': 'Tytuł sekcji (Wojna wszystkich…)',
+    '.syn__sub': 'Podtytuł (Warszawa…)',
+  },
+  zespol: {
+    '.section__num': 'Numer sekcji (03 / ZESPÓŁ)',
+  },
+  cytaty: {
+    '.section__num': 'Numer sekcji (04 / TRANSKRYPT)',
+  },
+  opinie: {
+    '.section__num': 'Numer sekcji (05 / PRE-CZYTELNICY)',
+  },
+  trylogia: {
+    '.section__num': 'Numer sekcji (06 / TRYLOGIA)',
+  },
+  formaty: {
+    '.section__num': 'Numer sekcji (07 / WYBÓR NOŚNIKA)',
+  },
+  autorka: {
+    '.author__num': 'Numer sekcji (08 / AUTORKA)',
+  },
+  zapisy: {
+    '.preorder__note': 'Notka pod formularzem',
+    '.preorder__check span': 'Etykieta zgody',
+  },
+  final: {
+    '.final__motto': 'Wezwanie końcowe (Otwórz akta…)',
+    '.final__date': 'Data w stopce',
+  },
 };
 
 const EDITABLE_SEL = [
@@ -36,17 +93,17 @@ const EDITABLE_SEL = [
   '.fmt__meta','.fmt__badge','.fmt__ribbon',
   '.btn__label',
   '.hero__packshot-tag','.hero__packshot-code',
-  '.countdown__label','.countdown__u',
+  '.countdown__label',
   '.live-badge',
   '.final__date','.foot__sub','.foot__title',
   '.section__sub','.section__num','.syn__num','.syn__sub','.author__num',
   '.author__plate-name','.author__plate-sub','.author__plate-tag',
-  '.hero__eyebrow span',
+  '.hero__eyebrow span:not(.hero__eyebrow-sep)',
   '.aspects__head span','.aspects__title',
-  '.preorder__label','.preorder__check span','.preorder__note','.perk-dot + span',
+  '.preorder__label','.preorder__check span','.preorder__note',
   '.author__contact a',
-  '.nav__brand','.nav__cta span',
   '.case__filehead span',
+  '.final__motto',
 ].join(',');
 
 const SKIP_SEL = [
@@ -54,7 +111,7 @@ const SKIP_SEL = [
   '.cursor','.cursor-dot','.grain','.scanlines','.vignette',
   '.hero__fog *','.hero__crosshair *','.hero__scroll',
   '.countdown__num','.live-badge__dot','.live-badge__time',
-  '.countdown__pulse','.live-badge__dot',
+  '.countdown__pulse',
   '.loader','.loader *',
   '.dossier__crosshair','.dossier__crosshair *',
   '.dossier__silhouette','.dossier__silhouette *',
@@ -72,25 +129,32 @@ const SKIP_SEL = [
   '.field__hint',
   '.sr-only',
   '.skip-link',
-  'nav.nav__links',
-  'nav.nav__links *',
-  '[aria-hidden="true"]',
+  'nav.nav__links','nav.nav__links *',
+  '.modal','.modal *',
+  '.loading','.loading *',
+  '.toast','.toast *',
+  '.topbar','.topbar *',
 ].join(',');
+
+const ALLOWED_INLINE_TAGS = new Set(['EM','STRONG','SPAN','BR','I','B']);
+const ALLOWED_INLINE_CLASSES = ['hl','accent','mono'];
 
 const state = {
   token: null,
   sha: null,
-  doc: null,
   rawHtml: null,
-  mutations: new Map(),   // selector → { newHTML, originalHTML }
+  doc: null,
+  parsedSections: [], // { id, element, fields, originalHidden }
+  mutations: new Map(),       // selector → { sectionId, originalOuterHTML, originalInnerHTML, newInnerHTML, label }
   hiddenSections: new Set(),
-  activeSectionId: null,
+  originalHiddenSections: new Set(),
+  draftTimer: null,
+  pendingSave: false,
 };
 
 /* ---------- utils ---------- */
 function decodeBase64(b64) {
-  const clean = b64.replace(/\s/g, '');
-  const bin = atob(clean);
+  const bin = atob(b64.replace(/\s/g, ''));
   const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
   return new TextDecoder('utf-8').decode(bytes);
 }
@@ -106,28 +170,46 @@ function showToast(msg, type = 'info') {
   t.className = 'toast toast--' + type;
   t.hidden = false;
   clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => t.hidden = true, 4200);
+  showToast._t = setTimeout(() => t.hidden = true, 4500);
 }
 function showLoading(visible, label) {
   $('#loading').hidden = !visible;
   if (label) $('#loading-label').textContent = label;
 }
+function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
-/* ---------- selectors (stable path) ---------- */
-function cssPathOf(el, scope) {
-  // path relative to scope (section) — uses tag + nth-of-type for stability
-  const parts = [];
-  let cur = el;
-  while (cur && cur !== scope && cur.nodeType === 1) {
-    const tag = cur.tagName.toLowerCase();
-    const parent = cur.parentNode;
-    if (!parent) break;
-    const sameTag = Array.from(parent.children).filter(c => c.tagName === cur.tagName);
-    const idx = sameTag.indexOf(cur) + 1;
-    parts.unshift(`${tag}:nth-of-type(${idx})`);
-    cur = parent;
-  }
-  return parts.join(' > ');
+/* ---------- sanitize paste ---------- */
+function sanitizeHTML(html) {
+  const tpl = document.createElement('template');
+  tpl.innerHTML = html;
+  const walk = (node) => {
+    [...node.childNodes].forEach(child => {
+      if (child.nodeType === 1) {
+        if (!ALLOWED_INLINE_TAGS.has(child.tagName)) {
+          // unwrap
+          const frag = document.createDocumentFragment();
+          while (child.firstChild) frag.appendChild(child.firstChild);
+          child.replaceWith(frag);
+          return;
+        }
+        // strip attributes except class (whitelist)
+        [...child.attributes].forEach(attr => {
+          if (attr.name === 'class') {
+            const cls = attr.value.split(/\s+/).filter(c => ALLOWED_INLINE_CLASSES.includes(c)).join(' ');
+            if (cls) child.setAttribute('class', cls);
+            else child.removeAttribute('class');
+          } else {
+            child.removeAttribute(attr.name);
+          }
+        });
+        walk(child);
+      } else if (child.nodeType === 8) {
+        child.remove(); // comments
+      }
+    });
+  };
+  walk(tpl.content);
+  return tpl.innerHTML;
 }
 
 /* ---------- auth ---------- */
@@ -142,23 +224,21 @@ function checkAuth() {
 function authSubmit() {
   const tok = $('#auth-token').value.trim();
   if (!tok) { showToast('Wpisz token', 'error'); return; }
-  if (!/^github_pat_|^ghp_/.test(tok)) {
-    if (!confirm('Token wygląda nietypowo. Kontynuować?')) return;
-  }
   localStorage.setItem('liber-pat', tok);
   state.token = tok;
   $('#auth-modal').hidden = true;
   $('#auth-token').value = '';
-  load();
+  load(state.pendingSave ? () => save() : null);
 }
 function logout() {
-  if (state.mutations.size && !confirm('Masz niezapisane zmiany. Na pewno wyloguj?')) return;
+  const hasChanges = state.mutations.size > 0 || hiddenDiff().length > 0;
+  if (hasChanges && !confirm('Masz niezapisane zmiany. Na pewno wyloguj?')) return;
   localStorage.removeItem('liber-pat');
   location.reload();
 }
 
 /* ---------- load ---------- */
-async function load() {
+async function load(onReady) {
   showLoading(true, 'Pobieram aktualną treść strony…');
   try {
     const r = await fetch(`${API}/repos/${REPO}/contents/${FILE_PATH}?ref=${BRANCH}&t=${Date.now()}`, {
@@ -175,16 +255,32 @@ async function load() {
     state.sha = data.sha;
     state.rawHtml = decodeBase64(data.content);
     state.doc = new DOMParser().parseFromString(state.rawHtml, 'text/html');
-    // Read existing hidden sections
-    state.hiddenSections.clear();
+
+    // Initial hidden sections from DOM
+    state.originalHiddenSections = new Set();
     $$('section[id]', state.doc).forEach(sec => {
-      if (sec.classList.contains('is-hidden-section')) state.hiddenSections.add(sec.id);
+      if (sec.classList.contains('is-hidden-section')) state.originalHiddenSections.add(sec.id);
     });
-    render();
+    state.hiddenSections = new Set(state.originalHiddenSections);
+
+    parseAndRender();
     $('#btn-preview').hidden = false;
     $('#btn-save').hidden = false;
     $('#btn-logout').hidden = false;
     $('#sidebar').hidden = false;
+
+    // Restore draft if exists for this SHA
+    const draft = loadDraft();
+    if (draft && (draft.mutations.length > 0 || draft.hidden.length > 0)) {
+      const stamp = new Date(draft.savedAt).toLocaleString('pl-PL');
+      if (confirm(`Wykryto wersję roboczą z ${stamp}.\n\nWczytać niezapisane zmiany (${draft.mutations.length} pól, ${draft.hidden.length} sekcji ukrytych)?`)) {
+        restoreDraft(draft);
+      } else {
+        clearDraft();
+      }
+    }
+
+    if (onReady) onReady();
   } catch (err) {
     showToast(err.message, 'error');
     if (/(401|403|nieautoryzowany)/i.test(err.message)) {
@@ -196,26 +292,154 @@ async function load() {
   }
 }
 
-/* ---------- render ---------- */
+/* ---------- parse & render ---------- */
+function parseAndRender() {
+  const sections = $$('section[id], header.nav, footer.foot', state.doc);
+  state.parsedSections = sections.map(sec => {
+    const id = sec.id || sec.tagName.toLowerCase();
+    const fields = extractFields(sec, id);
+    return { id, element: sec, fields, originalHidden: state.originalHiddenSections.has(id) };
+  });
+  render();
+}
+
+function extractFields(sec, sectionId) {
+  const seen = new Set();
+  const fields = [];
+
+  $$(EDITABLE_SEL, sec).forEach(el => {
+    if (seen.has(el)) return;
+    if (el.matches(SKIP_SEL)) return;
+    if (el.closest(SKIP_SEL)) return;
+    if (!el.textContent.trim()) return;
+
+    // Skip if a parent up to sec is also in EDITABLE_SEL — avoid duplicates
+    let parent = el.parentElement;
+    let nested = false;
+    while (parent && parent !== sec) {
+      if (parent.matches(EDITABLE_SEL) && !parent.matches(SKIP_SEL) && !parent.closest(SKIP_SEL)) {
+        nested = true;
+        break;
+      }
+      parent = parent.parentElement;
+    }
+    if (nested) return;
+
+    seen.add(el);
+
+    const path = cssPathOf(el, sec);
+    const key = `${sectionId}::${path}`;
+    const label = labelForField(el, sectionId, fields.length);
+    fields.push({
+      element: el,
+      key,
+      path,
+      label,
+      originalOuterHTML: el.outerHTML,
+      originalInnerHTML: el.innerHTML,
+    });
+  });
+  return fields;
+}
+
+function cssPathOf(el, scope) {
+  const parts = [];
+  let cur = el;
+  while (cur && cur !== scope && cur.nodeType === 1) {
+    const parent = cur.parentNode;
+    if (!parent) break;
+    const sameTag = Array.from(parent.children).filter(c => c.tagName === cur.tagName);
+    const idx = sameTag.indexOf(cur) + 1;
+    parts.unshift(`${cur.tagName.toLowerCase()}:nth-of-type(${idx})`);
+    cur = parent;
+  }
+  return parts.join(' > ');
+}
+
+function labelForField(el, sectionId, idxInSection) {
+  // 1. Explicit label from SECTION_LABELS
+  const labels = SECTION_LABELS[sectionId] || {};
+  for (const [sel, lbl] of Object.entries(labels)) {
+    try { if (el.matches(sel)) return lbl; } catch (_) {}
+  }
+  // 2. Generic by class
+  const cls = el.className || '';
+  if (cls.includes('ticker__item')) return 'Postulat na pasku';
+  if (cls.includes('syn__chip')) return 'Etykieta bloku fabuły';
+  if (cls.includes('quote__meta')) return 'Meta cytatu (timecode)';
+  if (cls.includes('case__v')) return 'Wartość pola dossier';
+  if (cls.includes('case__k')) return 'Etykieta pola dossier';
+  if (cls.includes('dossier__role')) return 'Stanowisko bohatera';
+  if (cls.includes('dossier__rank')) return 'Stopień / rola';
+  if (cls.includes('dossier__code')) return 'Kod dossier';
+  if (cls.includes('dossier__name')) return 'Imię i nazwisko bohatera';
+  if (cls.includes('dossier__alias')) return 'Pseudonim';
+  if (cls.includes('dossier__tags')) return 'Tag bohatera';
+  if (cls.includes('dossier__chart-k')) return 'Etykieta w karcie';
+  if (cls.includes('dossier__chart-v')) return 'Wartość w karcie';
+  if (cls.includes('dossier__portrait-tag')) return 'Etykieta portretu';
+  if (cls.includes('tome__sub')) return 'Podtytuł tomu';
+  if (cls.includes('tome__pill')) return 'Status tomu';
+  if (cls.includes('fmt__meta')) return 'Meta formatu (specyfikacja)';
+  if (cls.includes('fmt__badge')) return 'Numer formatu';
+  if (cls.includes('fmt__ribbon')) return 'Wstążka (BESTSELLER…)';
+  if (cls.includes('btn__label')) return 'Tekst przycisku';
+  if (cls.includes('section__num')) return 'Numer sekcji';
+  if (cls.includes('section__sub')) return 'Podtytuł sekcji';
+  if (cls.includes('author__plate-tag')) return 'Etykieta sygnatury';
+  if (cls.includes('author__plate-name')) return 'Sygnatura imię/nazwisko';
+  if (cls.includes('author__plate-sub')) return 'Sygnatura podpis';
+  if (cls.includes('press__badge')) return 'Etykieta recenzji (źródło)';
+  if (cls.includes('press__author')) return 'Autor recenzji';
+  if (cls.includes('aspects__title')) return 'Tytuł aspektu śledztwa';
+  if (cls.includes('preorder__label')) return 'Etykieta pola formularza';
+  if (cls.includes('preorder__check')) return 'Tekst zgody';
+  if (cls.includes('foot__title')) return 'Tytuł stopki';
+  if (cls.includes('foot__sub')) return 'Podpis stopki';
+  if (cls.includes('case__stamp')) return 'Pieczęć CLASSIFIED';
+  if (cls.includes('case__sub')) return 'Klauzula';
+  if (cls.includes('case__pullsig')) return 'Podpis pod cytatem motywu';
+  if (cls.includes('hero__motto')) return 'Motto pod tytułem';
+  if (cls.includes('hero__lede')) return 'Krótki opis pod motto';
+  if (cls.includes('live-badge')) return 'Pasek LIVE (transmisja)';
+  if (cls.includes('countdown__label')) return 'Nagłówek odliczania';
+
+  // 3. By tag with preview
+  const text = el.textContent.trim();
+  const preview = text.length > 60 ? text.slice(0, 57) + '…' : text;
+  const tag = el.tagName.toLowerCase();
+  const tagMap = {
+    h1: 'Tytuł główny',
+    h2: 'Nagłówek',
+    h3: 'Pod-nagłówek',
+    h4: 'Mniejszy nagłówek',
+    p:  'Akapit',
+    blockquote: 'Cytat',
+    figcaption: 'Podpis',
+    li: 'Punkt listy',
+  };
+  return `${tagMap[tag] || tag.toUpperCase()} — „${preview}"`;
+}
+
 function render() {
   const root = $('#content');
   root.innerHTML = '';
 
-  const sections = $$('section[id], header.nav, footer.foot', state.doc);
   const sidebar = $('#section-list');
   sidebar.innerHTML = '';
-  $('#section-count').textContent = sections.length + ' sekcji';
+  $('#section-count').textContent = state.parsedSections.length + ' sekcji';
 
-  sections.forEach(sec => {
-    const id = sec.id || sec.tagName.toLowerCase();
-    const meta = SECTION_META[id] || { label: prettyName(id), sub: '' };
+  state.parsedSections.forEach(({ id, element: sec, fields }) => {
+    const meta = SECTION_META[id] || { label: id, sub: '' };
+    const isHidden = state.hiddenSections.has(id);
 
     // sidebar link
     const link = document.createElement('a');
     link.className = 'sidebar__link';
     link.dataset.target = id;
     link.href = `#card-${id}`;
-    link.innerHTML = `<span>${meta.label}</span><span class="sidebar__link-badge">${countEditable(sec)}</span>`;
+    if (isHidden) link.classList.add('is-hidden-section');
+    link.innerHTML = `<span>${meta.label}</span><span class="sidebar__link-badge">${fields.length}</span>`;
     link.addEventListener('click', e => {
       e.preventDefault();
       $$('.sidebar__link').forEach(l => l.classList.remove('is-active'));
@@ -229,10 +453,8 @@ function render() {
     const card = document.createElement('div');
     card.className = 'card';
     card.id = `card-${id}`;
-    if (state.hiddenSections.has(id)) card.classList.add('is-hidden');
-    if (!SECTION_META[id]) card.dataset.unknown = '1';
+    if (isHidden) card.classList.add('is-hidden');
 
-    // head
     const head = document.createElement('div');
     head.className = 'card__head';
     head.innerHTML = `
@@ -241,13 +463,12 @@ function render() {
         <div class="card__sub">${meta.sub}</div>
       </div>
     `;
-    // visibility toggle (skip for header/footer/nav)
+    // toggle (skip for header/footer/hero — hero is always main)
     if (sec.tagName === 'SECTION' && id !== 'hero') {
       const tog = document.createElement('label');
       tog.className = 'toggle';
-      const isShown = !state.hiddenSections.has(id);
       tog.innerHTML = `
-        <input type="checkbox" ${isShown ? 'checked' : ''} data-section-toggle="${id}">
+        <input type="checkbox" ${isHidden ? '' : 'checked'} data-section-toggle="${id}">
         <span class="toggle__track"></span>
         <span>Pokazuj na stronie</span>
       `;
@@ -257,197 +478,268 @@ function render() {
         card.classList.toggle('is-hidden', !e.target.checked);
         link.classList.toggle('is-hidden-section', !e.target.checked);
         markDirty();
+        saveDraftDebounced();
       });
       head.appendChild(tog);
     }
     card.appendChild(head);
 
-    // body — fields
     const body = document.createElement('div');
     body.className = 'card__body';
-    const fields = extractFields(sec);
     if (!fields.length) {
-      body.innerHTML = `<div class="field__hint">W tej sekcji nie ma pól tekstowych do edycji.</div>`;
+      body.innerHTML = `<div class="field__hint">W tej sekcji nie ma pól tekstowych.</div>`;
     } else {
-      fields.forEach(f => body.appendChild(renderField(f, sec, id)));
+      fields.forEach(f => body.appendChild(renderField(f, id)));
     }
     card.appendChild(body);
 
     root.appendChild(card);
   });
 
-  // first link active
   const first = $('.sidebar__link');
   if (first) first.classList.add('is-active');
 }
 
-function prettyName(id) {
-  return id.replace(/-/g, ' ').replace(/^./, c => c.toUpperCase());
-}
+function renderField(field, sectionId) {
+  const { key, label, originalInnerHTML } = field;
 
-function countEditable(sec) {
-  return extractFields(sec).length;
-}
-
-function extractFields(sec) {
-  const all = new Set();
-  // Match editable selectors
-  $$(EDITABLE_SEL, sec).forEach(el => {
-    if (el.matches(SKIP_SEL)) return;
-    if (el.closest(SKIP_SEL)) return;
-    if (!el.textContent.trim()) return;
-    // skip if a parent is editable AND that parent will be edited (avoid nested duplication)
-    let parent = el.parentElement;
-    let nested = false;
-    while (parent && parent !== sec) {
-      if (parent.matches(EDITABLE_SEL) && !parent.matches(SKIP_SEL) && !parent.closest(SKIP_SEL)) {
-        nested = true;
-        break;
-      }
-      parent = parent.parentElement;
-    }
-    if (nested) return;
-    all.add(el);
-  });
-  return Array.from(all);
-}
-
-function renderField(el, scope, sectionId) {
-  const field = document.createElement('div');
-  field.className = 'field';
-
-  const text = el.textContent.trim();
-  const isLong = text.length > 90;
-  const path = cssPathOf(el, scope);
-  const key = `${sectionId}::${path}`;
+  const wrap = document.createElement('div');
+  wrap.className = 'field';
+  wrap.dataset.key = key;
 
   // Label
   const lbl = document.createElement('div');
   lbl.className = 'field__label';
-  lbl.innerHTML = `
-    <span class="field__name">${humanizeTag(el)}</span>
-    <span class="field__tag">${el.tagName.toLowerCase()}</span>
-  `;
-  field.appendChild(lbl);
+  lbl.innerHTML = `<span class="field__name">${label}</span>`;
+  wrap.appendChild(lbl);
 
-  // Input
-  let input;
-  if (isLong) {
-    input = document.createElement('textarea');
-    input.className = 'field__textarea';
-    input.rows = Math.min(8, Math.max(3, Math.ceil(text.length / 80)));
-  } else {
-    input = document.createElement('input');
-    input.type = 'text';
-    const tag = el.tagName.toLowerCase();
-    input.className = 'field__input';
-    if (['span','div','a'].includes(tag) || el.matches('.mono, .case__v, .case__k, .ticker__item, .syn__chip, .quote__meta, .dossier__role, .dossier__rank, .dossier__code, .tome__sub, .fmt__meta, .live-badge, .countdown__label, .case__filehead span, .author__contact a, .final__date, .foot__sub')) {
-      input.classList.add('field__input--mono');
-    }
+  // Detect rich content (has inline markup) — show toolbar if so OR if textContent is long
+  const hasMarkup = /<(em|strong|i|b|span)\b/i.test(originalInnerHTML);
+  const text = field.element.textContent.trim();
+  const isLong = text.length > 80;
+  const isMono = field.element.matches('.mono, .ticker__item, .syn__chip, .quote__meta, .dossier__role, .dossier__rank, .dossier__code, .tome__sub, .fmt__meta, .case__v, .case__k, .live-badge, .countdown__label, .case__filehead span, .author__contact a, .final__date, .foot__sub, .section__num, .section__sub, .syn__num, .author__num, .preorder__label, .preorder__check span, .case__stamp, .case__sub, .author__plate-sub, .author__plate-tag, .hero__packshot-tag, .hero__packshot-code, .dossier__chart-k, .dossier__chart-v, .dossier__tags span, .dossier__portrait-tag, .fmt__badge, .fmt__ribbon, .aspects__head span');
+
+  // Toolbar for rich text
+  let toolbar = null;
+  if (isLong || hasMarkup) {
+    toolbar = document.createElement('div');
+    toolbar.className = 'editor__toolbar';
+    toolbar.innerHTML = `
+      <button type="button" class="editor__tool" data-cmd="bold" title="Pogrub (Ctrl+B)"><strong>B</strong></button>
+      <button type="button" class="editor__tool" data-cmd="italic" title="Kursywa (Ctrl+I)"><em>I</em></button>
+      <button type="button" class="editor__tool" data-cmd="hl" title="Podświetl jadowicie">▒</button>
+      <button type="button" class="editor__tool" data-cmd="clear" title="Usuń formatowanie">⌫</button>
+      <span class="editor__sep"></span>
+      <button type="button" class="editor__tool editor__tool--reset" data-cmd="reset" title="Wróć do oryginału">↺</button>
+    `;
+    wrap.appendChild(toolbar);
   }
-  input.value = serializeHTML(el);
-  input.dataset.key = key;
 
-  input.addEventListener('input', () => {
-    state.mutations.set(key, {
-      element: el,
-      newHTML: input.value,
-      originalHTML: serializeHTML(el),
-    });
-    field.classList.add('is-changed');
-    markDirty();
+  // Editor — contentEditable div
+  const editor = document.createElement('div');
+  editor.className = 'editor';
+  if (isMono) editor.classList.add('editor--mono');
+  else if (!isLong && !hasMarkup) editor.classList.add('editor--single');
+  else editor.classList.add('editor--rich');
+  editor.contentEditable = 'true';
+  editor.spellcheck = true;
+  editor.lang = 'pl';
+  editor.innerHTML = originalInnerHTML;
+
+  // Paste = plain text
+  editor.addEventListener('paste', e => {
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+    document.execCommand('insertText', false, text);
   });
 
-  field.appendChild(input);
+  // Input → mutation
+  editor.addEventListener('input', () => {
+    const newHTML = editor.innerHTML;
+    if (newHTML === originalInnerHTML) {
+      state.mutations.delete(key);
+      wrap.classList.remove('is-changed');
+    } else {
+      state.mutations.set(key, {
+        ...field,
+        newInnerHTML: newHTML,
+      });
+      wrap.classList.add('is-changed');
+    }
+    markDirty();
+    saveDraftDebounced();
+  });
 
-  // Hint
-  if (el.querySelector('em, strong, span, a')) {
-    const hint = document.createElement('div');
-    hint.className = 'field__hint';
-    hint.textContent = 'Możesz używać <em>kursywy</em>, <strong>pogrubienia</strong> i <span class="hl">podświetlenia</span> (HTML).';
-    field.appendChild(hint);
+  // Block Enter for single-line fields (mono / short)
+  if (!isLong) {
+    editor.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+      }
+    });
   }
 
-  return field;
+  wrap.appendChild(editor);
+
+  // Toolbar actions
+  if (toolbar) {
+    toolbar.querySelectorAll('.editor__tool').forEach(btn => {
+      btn.addEventListener('mousedown', e => e.preventDefault()); // keep focus
+      btn.addEventListener('click', () => {
+        const cmd = btn.dataset.cmd;
+        editor.focus();
+        if (cmd === 'bold') document.execCommand('bold', false);
+        else if (cmd === 'italic') document.execCommand('italic', false);
+        else if (cmd === 'hl') wrapSelectionWithSpan(editor, 'hl');
+        else if (cmd === 'clear') document.execCommand('removeFormat', false);
+        else if (cmd === 'reset') {
+          editor.innerHTML = originalInnerHTML;
+          editor.dispatchEvent(new Event('input'));
+        }
+      });
+    });
+  }
+
+  // Hint
+  if (isLong || hasMarkup) {
+    const hint = document.createElement('div');
+    hint.className = 'field__hint';
+    hint.textContent = 'Klikaj w tekst żeby edytować. Zaznacz fragment i użyj przycisków powyżej żeby dodać kursywę albo podświetlenie.';
+    wrap.appendChild(hint);
+  }
+
+  return wrap;
 }
 
-function humanizeTag(el) {
-  const tag = el.tagName.toLowerCase();
-  const cls = el.className || '';
-  const map = {
-    h1: 'Główny tytuł',
-    h2: 'Nagłówek sekcji',
-    h3: 'Pod-nagłówek',
-    h4: 'Mniejszy nagłówek',
-    p:  'Akapit',
-    blockquote: 'Cytat',
-    figcaption: 'Podpis',
-    li: 'Punkt listy',
-  };
-  if (map[tag]) return map[tag];
-  if (cls.includes('ticker__item')) return 'Postulat na pasku';
-  if (cls.includes('syn__chip')) return 'Etykieta bloku';
-  if (cls.includes('quote__meta')) return 'Meta cytatu (REC...)';
-  if (cls.includes('case__v')) return 'Wartość pola';
-  if (cls.includes('case__k')) return 'Nazwa pola';
-  if (cls.includes('dossier__role')) return 'Stanowisko';
-  if (cls.includes('dossier__rank')) return 'Stopień';
-  if (cls.includes('dossier__code')) return 'Kod';
-  if (cls.includes('dossier__tags')) return 'Tag';
-  if (cls.includes('tome__sub')) return 'Podtytuł tomu';
-  if (cls.includes('fmt__meta')) return 'Meta formatu';
-  if (cls.includes('btn__label')) return 'Tekst przycisku';
-  if (cls.includes('hero__packshot')) return 'Etykieta okładki';
-  if (cls.includes('countdown__label')) return 'Nagłówek odliczania';
-  if (cls.includes('live-badge')) return 'Pasek LIVE';
-  if (cls.includes('final__date')) return 'Data w stopce';
-  if (cls.includes('foot__title')) return 'Tytuł stopki';
-  if (cls.includes('foot__sub')) return 'Podpis stopki';
-  if (cls.includes('aspects__title')) return 'Tytuł aspektu śledztwa';
-  if (cls.includes('preorder__label')) return 'Etykieta pola formularza';
-  if (cls.includes('author__plate')) return 'Sygnatura autorki';
-  if (cls.includes('case__stamp')) return 'Pieczęć CLASSIFIED';
-  if (cls.includes('case__sub')) return 'Klauzula';
-  if (cls.includes('case__filehead')) return 'Nagłówek pliku';
-  if (cls.includes('section__sub')) return 'Podtytuł sekcji';
-  if (cls.includes('section__num')) return 'Numer sekcji';
-  return tag.toUpperCase();
+function wrapSelectionWithSpan(editor, className) {
+  const sel = window.getSelection();
+  if (!sel || !sel.rangeCount) return;
+  const range = sel.getRangeAt(0);
+  if (range.collapsed) return;
+  // If selection already in a span.hl, unwrap
+  const ancestor = range.commonAncestorContainer.nodeType === 1
+    ? range.commonAncestorContainer
+    : range.commonAncestorContainer.parentElement;
+  const inHl = ancestor && ancestor.closest && ancestor.closest('.' + className);
+  if (inHl && editor.contains(inHl)) {
+    // Unwrap
+    const frag = document.createDocumentFragment();
+    while (inHl.firstChild) frag.appendChild(inHl.firstChild);
+    inHl.replaceWith(frag);
+  } else {
+    const span = document.createElement('span');
+    span.className = className;
+    span.appendChild(range.extractContents());
+    range.insertNode(span);
+  }
+  editor.dispatchEvent(new Event('input'));
 }
 
-function serializeHTML(el) {
-  return el.innerHTML.trim();
+/* ---------- dirty state ---------- */
+function hiddenDiff() {
+  const orig = state.originalHiddenSections;
+  const cur = state.hiddenSections;
+  const diff = [];
+  for (const id of cur) if (!orig.has(id)) diff.push({ id, op: 'hide' });
+  for (const id of orig) if (!cur.has(id)) diff.push({ id, op: 'show' });
+  return diff;
 }
 
-/* ---------- mutations & save ---------- */
 function markDirty() {
   const btn = $('#btn-save');
-  if (state.mutations.size || state.hiddenSections.size !== originalHidden().size) {
+  const total = state.mutations.size + hiddenDiff().length;
+  if (total > 0) {
     btn.classList.add('is-dirty');
-    btn.textContent = `Zapisz zmiany (${state.mutations.size + diffHidden()})`;
+    btn.textContent = `Zapisz zmiany (${total})`;
   } else {
     btn.classList.remove('is-dirty');
     btn.textContent = 'Zapisz zmiany';
   }
 }
 
-function originalHidden() {
-  const s = new Set();
-  $$('section[id].is-hidden-section', new DOMParser().parseFromString(state.rawHtml, 'text/html')).forEach(sec => s.add(sec.id));
-  return s;
+/* ---------- drafts ---------- */
+function saveDraftDebounced() {
+  clearTimeout(state.draftTimer);
+  state.draftTimer = setTimeout(saveDraft, DRAFT_DEBOUNCE);
+}
+function saveDraft() {
+  if (!state.sha) return;
+  const data = {
+    sha: state.sha,
+    savedAt: Date.now(),
+    mutations: Array.from(state.mutations.entries()).map(([key, m]) => ({
+      key,
+      sectionId: state.parsedSections.find(s => s.fields.some(f => f.key === key))?.id,
+      label: m.label,
+      newInnerHTML: m.newInnerHTML,
+      originalOuterHTML: m.originalOuterHTML,
+      originalInnerHTML: m.originalInnerHTML,
+    })),
+    hidden: Array.from(state.hiddenSections),
+  };
+  try {
+    localStorage.setItem(DRAFT_PREFIX + state.sha, JSON.stringify(data));
+    cleanupOldDrafts();
+  } catch (e) {
+    console.warn('Cannot save draft:', e);
+  }
+}
+function loadDraft() {
+  if (!state.sha) return null;
+  const raw = localStorage.getItem(DRAFT_PREFIX + state.sha);
+  if (!raw) return null;
+  try { return JSON.parse(raw); } catch { return null; }
+}
+function restoreDraft(draft) {
+  draft.mutations.forEach(m => {
+    // Find current element in fields by key
+    const sec = state.parsedSections.find(s => s.id === m.sectionId);
+    if (!sec) return;
+    const field = sec.fields.find(f => f.key === m.key);
+    if (!field) return;
+    state.mutations.set(m.key, {
+      ...field,
+      newInnerHTML: m.newInnerHTML,
+    });
+  });
+  state.hiddenSections = new Set(draft.hidden);
+  render();
+  // Mark mutated fields
+  state.mutations.forEach((_, key) => {
+    const wrap = $(`.field[data-key="${CSS.escape(key)}"]`);
+    if (wrap) {
+      wrap.classList.add('is-changed');
+      const ed = wrap.querySelector('.editor');
+      if (ed && state.mutations.has(key)) ed.innerHTML = state.mutations.get(key).newInnerHTML;
+    }
+  });
+  markDirty();
+  showToast(`Wczytano wersję roboczą (${state.mutations.size} pól)`, 'success');
+}
+function clearDraft() {
+  if (!state.sha) return;
+  localStorage.removeItem(DRAFT_PREFIX + state.sha);
+}
+function cleanupOldDrafts() {
+  const drafts = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith(DRAFT_PREFIX)) {
+      try {
+        const d = JSON.parse(localStorage.getItem(k));
+        drafts.push({ key: k, savedAt: d.savedAt });
+      } catch (_) {}
+    }
+  }
+  drafts.sort((a, b) => b.savedAt - a.savedAt);
+  drafts.slice(MAX_DRAFTS).forEach(d => localStorage.removeItem(d.key));
 }
 
-function diffHidden() {
-  const orig = originalHidden();
-  let diff = 0;
-  for (const id of state.hiddenSections) if (!orig.has(id)) diff++;
-  for (const id of orig) if (!state.hiddenSections.has(id)) diff++;
-  return diff;
-}
-
+/* ---------- save (string-based replace) ---------- */
 async function save() {
   const btn = $('#btn-save');
   if (btn.classList.contains('is-saving')) return;
-  if (!state.mutations.size && diffHidden() === 0) {
+  if (state.mutations.size === 0 && hiddenDiff().length === 0) {
     showToast('Brak zmian do zapisania', 'info');
     return;
   }
@@ -455,68 +747,126 @@ async function save() {
   btn.disabled = true;
 
   try {
-    // Apply mutations to doc
-    state.mutations.forEach(({ element, newHTML }) => {
-      element.innerHTML = newHTML;
-    });
-
-    // Apply hidden sections
-    $$('section[id]', state.doc).forEach(sec => {
-      const id = sec.id;
-      if (state.hiddenSections.has(id)) sec.classList.add('is-hidden-section');
-      else sec.classList.remove('is-hidden-section');
-    });
-
-    // Serialize
-    let newHtml = '<!doctype html>\n' + state.doc.documentElement.outerHTML;
-
-    // Commit via GitHub API
-    const message = `Edycja treści przez panel admin (${state.mutations.size} zmian${diffHidden() ? ', ' + diffHidden() + ' sekcji ukrytych/odkrytych' : ''})`;
-    const body = {
-      message,
-      content: encodeBase64(newHtml),
-      sha: state.sha,
-      branch: BRANCH,
-    };
-
-    const r = await fetch(`${API}/repos/${REPO}/contents/${FILE_PATH}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${state.token}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
-
-    if (r.status === 409) throw new Error('Treść była zmieniona przez kogoś innego. Odśwież panel.');
-    if (r.status === 401 || r.status === 403) throw new Error('Token nie ma uprawnień do zapisu.');
-    if (!r.ok) {
-      const txt = await r.text();
-      throw new Error(`Błąd zapisu (${r.status}): ${txt.slice(0, 120)}`);
-    }
-    const result = await r.json();
-    state.sha = result.content.sha;
-    state.rawHtml = newHtml;
+    const result = await attemptSave(state.rawHtml, state.sha, /* retries */ 1);
+    state.rawHtml = result.newHtml;
+    state.sha = result.newSha;
+    state.originalHiddenSections = new Set(state.hiddenSections);
     state.mutations.clear();
-
-    $('#save-modal').hidden = false;
-    btn.classList.remove('is-dirty');
-    btn.textContent = 'Zapisz zmiany';
+    clearDraft();
     $$('.field.is-changed').forEach(f => f.classList.remove('is-changed'));
+    markDirty();
+    $('#save-modal').hidden = false;
   } catch (err) {
-    showToast(err.message, 'error');
+    if (/(401|403)/i.test(err.message) || err.statusCode === 401 || err.statusCode === 403) {
+      state.pendingSave = true;
+      localStorage.removeItem('liber-pat');
+      $('#auth-modal').hidden = false;
+      showToast('Token wygasł. Zaloguj ponownie żeby dokończyć zapis.', 'error');
+    } else if (err.statusCode === 409) {
+      showConflictModal();
+    } else {
+      showToast(err.message, 'error');
+    }
   } finally {
     btn.classList.remove('is-saving');
     btn.disabled = false;
   }
 }
 
+async function attemptSave(baseHtml, baseSha, retries) {
+  // 1. Apply mutations + hidden state to baseHtml using string replace
+  let newHtml = baseHtml;
+
+  // Apply mutations (originalOuterHTML → newOuterHTML)
+  for (const [, m] of state.mutations) {
+    const newOuter = m.originalOuterHTML.replace(
+      // Replace innerHTML inside outerHTML
+      // Structure: <TAG ...>INNER</TAG>
+      /^(<[^>]+>)([\s\S]*)(<\/[^>]+>)$/,
+      (_, open, _inner, close) => open + m.newInnerHTML + close
+    );
+    if (newHtml.includes(m.originalOuterHTML)) {
+      newHtml = newHtml.replace(m.originalOuterHTML, newOuter);
+    } else {
+      throw new Error(`Nie znalazłem fragmentu „${m.label}" w pliku. Odśwież panel i spróbuj ponownie.`);
+    }
+  }
+
+  // Apply hidden state — modify section opening tags
+  $$('section[id]', state.doc).forEach(sec => {
+    // Currently we serialize doc only as fallback; we modify rawHtml string directly.
+  });
+  // Strategy for hidden sections: regex on `<section ... id="ID" ... class="...">`
+  for (const sec of state.parsedSections) {
+    if (sec.element.tagName !== 'SECTION') continue;
+    const id = sec.id;
+    const shouldBeHidden = state.hiddenSections.has(id);
+    const sectionRegex = new RegExp(`(<section\\b[^>]*\\bid="${id}"[^>]*?)(\\sclass="[^"]*")?([^>]*>)`, 'i');
+    newHtml = newHtml.replace(sectionRegex, (full, before, cls, after) => {
+      let classes = (cls || '').replace(/^\sclass="|"$/g, '').replace(/^\s*class="/, '').split(/\s+/).filter(Boolean);
+      classes = classes.filter(c => c !== 'is-hidden-section');
+      if (shouldBeHidden) classes.push('is-hidden-section');
+      const newCls = classes.length ? ` class="${classes.join(' ')}"` : '';
+      return before + newCls + after;
+    });
+  }
+
+  // 2. PUT
+  const body = {
+    message: `Edycja treści (${state.mutations.size} pól${hiddenDiff().length ? ', ' + hiddenDiff().length + ' sekcji' : ''})`,
+    content: encodeBase64(newHtml),
+    sha: baseSha,
+    branch: BRANCH,
+  };
+  const r = await fetch(`${API}/repos/${REPO}/contents/${FILE_PATH}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${state.token}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (r.status === 409 && retries > 0) {
+    // Refetch latest and try once more
+    const refresh = await fetch(`${API}/repos/${REPO}/contents/${FILE_PATH}?ref=${BRANCH}&t=${Date.now()}`, {
+      headers: { 'Authorization': `Bearer ${state.token}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!refresh.ok) throw Object.assign(new Error('Konflikt — odśwież panel.'), { statusCode: 409 });
+    const fresh = await refresh.json();
+    const freshHtml = decodeBase64(fresh.content);
+    // Check if our originalOuterHTMLs still exist in the fresh file
+    const allFound = Array.from(state.mutations.values()).every(m => freshHtml.includes(m.originalOuterHTML));
+    if (!allFound) throw Object.assign(new Error('Treści zostały zmienione w trakcie edycji.'), { statusCode: 409 });
+    return attemptSave(freshHtml, fresh.sha, retries - 1);
+  }
+  if (r.status === 401 || r.status === 403) {
+    throw Object.assign(new Error('Brak uprawnień'), { statusCode: r.status });
+  }
+  if (!r.ok) {
+    const txt = await r.text();
+    throw new Error(`Błąd zapisu (${r.status}): ${txt.slice(0, 140)}`);
+  }
+  const result = await r.json();
+  return { newHtml, newSha: result.content.sha };
+}
+
+function showConflictModal() {
+  const modal = $('#conflict-modal');
+  if (!modal) {
+    // create on demand
+    showToast('Konflikt zmian — odśwież panel.', 'error');
+    return;
+  }
+  modal.hidden = false;
+}
+
 /* ---------- safety ---------- */
 window.addEventListener('beforeunload', e => {
-  if (state.mutations.size || diffHidden() > 0) {
+  if (state.mutations.size > 0 || hiddenDiff().length > 0) {
     e.preventDefault();
-    return e.returnValue = '';
+    e.returnValue = '';
   }
 });
 
@@ -526,5 +876,13 @@ $('#auth-token').addEventListener('keydown', e => { if (e.key === 'Enter') authS
 $('#btn-save').addEventListener('click', save);
 $('#btn-logout').addEventListener('click', logout);
 $('#save-modal-close').addEventListener('click', () => $('#save-modal').hidden = true);
+
+// keyboard shortcut: Ctrl+S = save
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    save();
+  }
+});
 
 if (checkAuth()) load();
