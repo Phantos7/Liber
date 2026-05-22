@@ -15,7 +15,7 @@ const NO_HOVER = matchMedia('(hover: none), (max-width: 900px)').matches;
 
   let target = 0, current = 0, loaded = false, done = false;
   const startTime = performance.now();
-  const MIN_DURATION = 350;
+  const MIN_DURATION = 0;
 
   const finish = () => {
     if (done) return;
