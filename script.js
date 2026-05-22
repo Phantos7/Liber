@@ -15,7 +15,7 @@ const NO_HOVER = matchMedia('(hover: none), (max-width: 900px)').matches;
 
   let target = 0, current = 0, loaded = false, done = false;
   const startTime = performance.now();
-  const MIN_DURATION = 0;
+  const RAMP_DURATION = 700;   // czas wirtualnego rozpędu paska, gdy obrazy się jeszcze ładują
 
   const finish = () => {
     if (done) return;
@@ -28,18 +28,18 @@ const NO_HOVER = matchMedia('(hover: none), (max-width: 900px)').matches;
   const tick = (now) => {
     if (done) return;
     const elapsed = now - startTime;
-    if (loaded && elapsed >= MIN_DURATION) {
+    if (loaded) {
       target = 100;
-    } else if (loaded) {
-      target = Math.max(target, 92);
     } else {
-      target = Math.min(82, (elapsed / MIN_DURATION) * 70);
+      // animowany pasek od 0% do 82% w trakcie ładowania obrazów
+      target = Math.min(82, (elapsed / RAMP_DURATION) * 82);
     }
     current += (target - current) * 0.18;
     if (target - current < 0.5) current = target;
-    fill.style.right = (100 - current) + '%';
-    pct.textContent = String(Math.floor(current)).padStart(2, '0') + '%';
-    if (current >= 99.5 && loaded) {
+    const safePct = isFinite(current) ? Math.max(0, Math.min(100, current)) : 0;
+    fill.style.right = (100 - safePct) + '%';
+    pct.textContent = String(Math.floor(safePct)).padStart(2, '0') + '%';
+    if (safePct >= 99.5 && loaded) {
       finish();
       return;
     }
