@@ -14,6 +14,9 @@
 
 <header class="topbar">
   <div class="topbar__left">
+    <button type="button" class="topbar__burger" id="btn-sidebar" aria-label="Pokaż sekcje" hidden>
+      <span></span><span></span><span></span>
+    </button>
     <span class="topbar__mark">◐</span>
     <span class="topbar__brand">LIBER <span class="topbar__sub">· panel edycji</span></span>
   </div>
@@ -52,6 +55,17 @@
 <div class="loading" id="loading" hidden>
   <div class="loading__spinner"></div>
   <div class="loading__label" id="loading-label">Ładuję treść strony…</div>
+</div>
+
+<!-- Conflict modal -->
+<div class="modal" id="conflict-modal" hidden>
+  <div class="modal__box">
+    <h1 class="modal__title">Konflikt wersji</h1>
+    <p class="modal__lede">Strona została zmieniona w trakcie Twojej edycji (ktoś zapisał ją równolegle). Twoje zmiany są bezpiecznie zachowane w wersji roboczej — możesz wybrać:</p>
+    <button type="button" class="modal__btn" id="conflict-reload">Odśwież panel (Twoja wersja robocza zostanie zaproponowana po pobraniu)</button>
+    <button type="button" class="modal__btn modal__btn--ghost" id="conflict-cancel">Anuluj i sprawdź zmiany</button>
+    <p class="modal__note">Po odświeżeniu zobaczysz prompt z propozycją wczytania niezapisanej pracy.</p>
+  </div>
 </div>
 
 <!-- Save success modal -->

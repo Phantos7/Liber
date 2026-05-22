@@ -268,6 +268,8 @@ async function load(onReady) {
     $('#btn-save').hidden = false;
     $('#btn-logout').hidden = false;
     $('#sidebar').hidden = false;
+    if (matchMedia('(max-width: 800px)').matches && $('#btn-sidebar')) $('#btn-sidebar').hidden = false;
+    else if ($('#btn-sidebar')) $('#btn-sidebar').hidden = false; // pokazuj zawsze gdy zalogowany
 
     // Restore draft if exists for this SHA
     const draft = loadDraft();
@@ -301,6 +303,29 @@ function parseAndRender() {
     return { id, element: sec, fields, originalHidden: state.originalHiddenSections.has(id) };
   });
   render();
+}
+
+// Refresh baselines without re-rendering UI — używane po udanym save.
+// Mapujemy istniejące fields do nowych elementów w fresh DOM przez ścieżkę CSS.
+function refreshBaselines() {
+  const sections = $$('section[id], header.nav, footer.foot', state.doc);
+  state.parsedSections.forEach(parsed => {
+    const freshSec = sections.find(s => (s.id || s.tagName.toLowerCase()) === parsed.id);
+    if (!freshSec) return;
+    parsed.element = freshSec;
+    parsed.fields.forEach(field => {
+      try {
+        const fresh = field.path
+          ? freshSec.querySelector(field.path.split(' > ').map(s => s).join(' > '))
+          : null;
+        if (fresh) {
+          field.element = fresh;
+          field.originalOuterHTML = fresh.outerHTML;
+          field.originalInnerHTML = fresh.innerHTML;
+        }
+      } catch (_) {}
+    });
+  });
 }
 
 function extractFields(sec, sectionId) {
@@ -546,11 +571,24 @@ function renderField(field, sectionId) {
   editor.lang = 'pl';
   editor.innerHTML = originalInnerHTML;
 
-  // Paste = plain text
+  // Paste: zachowaj kursywę / pogrubienie z Worda (sanityzacja whitelistą),
+  // resztę spłaszcz do plain text.
   editor.addEventListener('paste', e => {
     e.preventDefault();
-    const text = (e.clipboardData || window.clipboardData).getData('text/plain');
-    document.execCommand('insertText', false, text);
+    const cd = e.clipboardData || window.clipboardData;
+    const html = cd.getData('text/html');
+    const text = cd.getData('text/plain');
+    if (html) {
+      const clean = sanitizeHTML(html);
+      // Wstaw bezpiecznie — execCommand insertHTML jeśli dostępny, fallback do textu
+      if (document.queryCommandSupported && document.queryCommandSupported('insertHTML')) {
+        document.execCommand('insertHTML', false, clean);
+      } else {
+        document.execCommand('insertText', false, text);
+      }
+    } else {
+      document.execCommand('insertText', false, text);
+    }
   });
 
   // Input → mutation
@@ -753,6 +791,12 @@ async function save() {
     state.originalHiddenSections = new Set(state.hiddenSections);
     state.mutations.clear();
     clearDraft();
+
+    // Re-parse fresh DOM and refresh baselines (originalOuterHTML / innerHTML)
+    // żeby kolejny save w tej samej sesji nie szukał stale fragmentu.
+    state.doc = new DOMParser().parseFromString(state.rawHtml, 'text/html');
+    refreshBaselines();
+
     $$('.field.is-changed').forEach(f => f.classList.remove('is-changed'));
     markDirty();
     $('#save-modal').hidden = false;
@@ -855,7 +899,6 @@ async function attemptSave(baseHtml, baseSha, retries) {
 function showConflictModal() {
   const modal = $('#conflict-modal');
   if (!modal) {
-    // create on demand
     showToast('Konflikt zmian — odśwież panel.', 'error');
     return;
   }
@@ -876,6 +919,30 @@ $('#auth-token').addEventListener('keydown', e => { if (e.key === 'Enter') authS
 $('#btn-save').addEventListener('click', save);
 $('#btn-logout').addEventListener('click', logout);
 $('#save-modal-close').addEventListener('click', () => $('#save-modal').hidden = true);
+
+// Conflict modal handlers
+const conflictReload = $('#conflict-reload');
+if (conflictReload) conflictReload.addEventListener('click', () => { saveDraft(); location.reload(); });
+const conflictCancel = $('#conflict-cancel');
+if (conflictCancel) conflictCancel.addEventListener('click', () => { $('#conflict-modal').hidden = true; });
+
+// Mobile sidebar toggle
+const sidebarBtn = $('#btn-sidebar');
+if (sidebarBtn) {
+  sidebarBtn.addEventListener('click', () => {
+    const sb = $('#sidebar');
+    sb.classList.toggle('is-open');
+    sidebarBtn.setAttribute('aria-expanded', sb.classList.contains('is-open') ? 'true' : 'false');
+  });
+  // Auto close after section click on mobile
+  document.addEventListener('click', e => {
+    const link = e.target.closest('.sidebar__link');
+    if (link && matchMedia('(max-width: 800px)').matches) {
+      $('#sidebar').classList.remove('is-open');
+      sidebarBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
 
 // keyboard shortcut: Ctrl+S = save
 document.addEventListener('keydown', e => {

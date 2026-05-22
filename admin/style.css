@@ -49,6 +49,28 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
   z-index: 50;
 }
 .topbar__left { display: flex; align-items: center; gap: 12px; }
+.topbar__burger {
+  display: none;
+  width: 38px; height: 38px;
+  padding: 9px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.12);
+  cursor: pointer;
+  position: relative;
+  margin-right: 6px;
+}
+.topbar__burger span {
+  position: absolute; left: 8px; right: 8px;
+  height: 1.5px; background: var(--bone);
+  transition: transform .25s var(--ease), opacity .2s, top .25s var(--ease);
+}
+.topbar__burger span:nth-child(1) { top: 11px; }
+.topbar__burger span:nth-child(2) { top: 18px; }
+.topbar__burger span:nth-child(3) { top: 25px; }
+.topbar__burger:hover { border-color: var(--liber); }
+@media (max-width: 800px) {
+  .topbar__burger:not([hidden]) { display: block; }
+}
 .topbar__mark {
   color: var(--liber);
   font-size: 18px;
@@ -533,11 +555,6 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
   color: var(--fog-2);
   margin-top: 5px;
   line-height: 1.4;
-}
-.field__hint {
-  font-size: 11px;
-  color: var(--fog-2);
-  margin-top: 5px;
   font-style: italic;
 }
 
