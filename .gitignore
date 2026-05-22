@@ -19,3 +19,7 @@ node_modules/
 # Cloudflare Wrangler
 worker/.wrangler/
 worker/node_modules/
+
+# Tools/build
+.tools/node_modules/
+.tools/package-lock.json
