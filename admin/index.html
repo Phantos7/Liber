@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>LIBER · Panel edycji</title>
+<meta name="robots" content="noindex,nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__left">
+    <span class="topbar__mark">◐</span>
+    <span class="topbar__brand">LIBER <span class="topbar__sub">· panel edycji</span></span>
+  </div>
+  <div class="topbar__right">
+    <a href="../" target="_blank" class="topbar__btn" id="btn-preview" hidden>Podgląd&nbsp;strony ↗</a>
+    <button type="button" class="topbar__btn topbar__btn--primary" id="btn-save" hidden>Zapisz zmiany</button>
+    <button type="button" class="topbar__btn topbar__btn--ghost" id="btn-logout" hidden>Wyloguj</button>
+  </div>
+</header>
+
+<!-- Auth modal -->
+<div class="modal" id="auth-modal" hidden>
+  <div class="modal__box">
+    <h1 class="modal__title">Witaj w panelu edycji</h1>
+    <p class="modal__lede">Żeby zapisywać zmiany na stronie, potrzebujesz tokenu z GitHuba. Tworzysz go raz, przeglądarka go zapamięta.</p>
+    <label class="modal__label" for="auth-token">Token GitHub</label>
+    <input id="auth-token" type="password" placeholder="github_pat_..." autocomplete="off" spellcheck="false" />
+    <button type="button" class="modal__btn" id="auth-submit">Zaloguj</button>
+    <details class="modal__help">
+      <summary>Jak wygenerować token? (3 minuty)</summary>
+      <ol>
+        <li>Wejdź na <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a></li>
+        <li><strong>Token name:</strong> wpisz „LIBER edycja"</li>
+        <li><strong>Expiration:</strong> wybierz „No expiration" albo zaznacz datę w przyszłości</li>
+        <li><strong>Repository access:</strong> wybierz „Only select repositories" → wskaż <code>Phantos7/Liber</code></li>
+        <li><strong>Repository permissions:</strong> rozwiń „Contents" → ustaw na „Read and write"</li>
+        <li>Na dole kliknij <strong>Generate token</strong></li>
+        <li>Skopiuj wygenerowany ciąg i wklej tutaj. Zapamiętaj go też w bezpiecznym miejscu — drugi raz nie zobaczysz.</li>
+      </ol>
+    </details>
+    <p class="modal__note">Token zostaje tylko w pamięci Twojej przeglądarki. Nie wysyłamy go nigdzie poza serwery GitHuba.</p>
+  </div>
+</div>
+
+<!-- Loading overlay -->
+<div class="loading" id="loading" hidden>
+  <div class="loading__spinner"></div>
+  <div class="loading__label" id="loading-label">Ładuję treść strony…</div>
+</div>
+
+<!-- Save success modal -->
+<div class="modal" id="save-modal" hidden>
+  <div class="modal__box">
+    <div class="modal__check">✓</div>
+    <h1 class="modal__title">Zapisano</h1>
+    <p class="modal__lede">Zmiany pojawią się na stronie za <strong>1–2 minuty</strong> (GitHub przebudowuje stronę w tle). Możesz odświeżyć podgląd po chwili.</p>
+    <button type="button" class="modal__btn" id="save-modal-close">Wracam do edycji</button>
+    <a href="../" target="_blank" class="modal__btn modal__btn--ghost">Otwórz podgląd ↗</a>
+  </div>
+</div>
+
+<main class="content" id="content">
+  <div class="hint" id="hint">
+    Witaj. Wybierz po lewej sekcję, klikaj w teksty żeby je zmienić, na dole każdej karty znajdziesz przełącznik „Pokazuj na stronie" jeśli chcesz ukryć cały blok.
+  </div>
+</main>
+
+<aside class="sidebar" id="sidebar" hidden>
+  <div class="sidebar__head">
+    <span class="sidebar__title">Sekcje strony</span>
+    <span class="sidebar__count" id="section-count"></span>
+  </div>
+  <nav class="sidebar__nav" id="section-list"></nav>
+</aside>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -43,6 +43,9 @@ html.js body { cursor: none; }
   padding: 0; margin: -1px; overflow: hidden;
   clip: rect(0,0,0,0); white-space: nowrap; border: 0;
 }
+
+/* Sekcje ukryte z panelu edycji */
+.is-hidden-section { display: none !important; }
 .skip-link {
   position: absolute; top: -100px; left: 16px;
   z-index: 10001;
