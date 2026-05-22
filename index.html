@@ -69,7 +69,10 @@
 <!-- ===================== HERO ===================== -->
 <section id="hero" class="hero" data-hero>
   <div class="hero__bg" data-parallax-bg>
-    <img src="assets/forest-bg.webp" alt="" class="hero__bg-img" fetchpriority="high" />
+    <picture>
+      <source srcset="assets/forest-bg.avif" type="image/avif" />
+      <img src="assets/forest-bg.webp" alt="" class="hero__bg-img" fetchpriority="high" />
+    </picture>
     <div class="hero__bg-overlay"></div>
   </div>
   <div class="hero__fog" aria-hidden="true">
@@ -131,7 +134,10 @@
       <aside class="hero__packshot" aria-label="Okładka książki LIBER">
         <div class="hero__packshot-frame">
           <div class="hero__packshot-glow"></div>
-          <img src="assets/cover-paperback.webp" alt="Okładka książki LIBER" class="hero__packshot-img" data-float fetchpriority="high" decoding="async" />
+          <picture>
+            <source srcset="assets/cover-paperback.avif" type="image/avif" />
+            <img src="assets/cover-paperback.webp" alt="Okładka książki LIBER" class="hero__packshot-img" data-float fetchpriority="high" decoding="async" />
+          </picture>
           <div class="hero__packshot-shadow"></div>
         </div>
         <div class="hero__packshot-meta mono">
@@ -590,7 +596,10 @@
     <article class="fmt" data-reveal data-tilt>
       <div class="fmt__badge mono">01 · DRUK</div>
       <div class="fmt__cover">
-        <img src="assets/cover-paperback.webp" alt="LIBER — wydanie miękkie" loading="lazy" decoding="async" />
+        <picture>
+          <source srcset="assets/cover-paperback.avif" type="image/avif" />
+          <img src="assets/cover-paperback.webp" alt="LIBER — wydanie miękkie" loading="lazy" decoding="async" />
+        </picture>
         <span class="fmt__shadow"></span>
       </div>
       <h3 class="fmt__title serif">Miękka oprawa</h3>
@@ -606,7 +615,10 @@
       <div class="fmt__ribbon mono">BESTSELLER · POLECANE</div>
       <div class="fmt__badge mono">02 · CYFROWE</div>
       <div class="fmt__cover">
-        <img src="assets/cover-ebook.webp" alt="LIBER — ebook" loading="lazy" decoding="async" />
+        <picture>
+          <source srcset="assets/cover-ebook.avif" type="image/avif" />
+          <img src="assets/cover-ebook.webp" alt="LIBER — ebook" loading="lazy" decoding="async" />
+        </picture>
         <span class="fmt__shadow"></span>
       </div>
       <h3 class="fmt__title serif">E-book</h3>
@@ -621,7 +633,10 @@
     <article class="fmt" data-reveal data-tilt>
       <div class="fmt__badge mono">03 · AUDIO</div>
       <div class="fmt__cover">
-        <img src="assets/cover-audio.webp" alt="LIBER — audiobook" loading="lazy" decoding="async" />
+        <picture>
+          <source srcset="assets/cover-audio.avif" type="image/avif" />
+          <img src="assets/cover-audio.webp" alt="LIBER — audiobook" loading="lazy" decoding="async" />
+        </picture>
         <span class="fmt__shadow"></span>
       </div>
       <h3 class="fmt__title serif">Audiobook</h3>
@@ -747,7 +762,10 @@
     </div>
     <div class="foot__publisher">
       <a href="https://www.wydawnictwometafora.pl" target="_blank" rel="noopener">
-        <img src="assets/publisher-logo.webp" alt="Wydawnictwo Metafora" loading="lazy" decoding="async" />
+        <picture>
+          <source srcset="assets/publisher-logo.avif" type="image/avif" />
+          <img src="assets/publisher-logo.webp" alt="Wydawnictwo Metafora" loading="lazy" decoding="async" />
+        </picture>
       </a>
     </div>
     <div class="foot__contact mono">
@@ -758,6 +776,6 @@
   </div>
 </footer>
 
-<script src="script.js?v=10"></script>
+<script src="script.js?v=12"></script>
 </body>
 </html>
