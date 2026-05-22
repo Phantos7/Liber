@@ -355,6 +355,26 @@ const NO_HOVER = matchMedia('(hover: none), (max-width: 900px)').matches;
   video.addEventListener('volumechange', () => setMuted(video.muted));
 })();
 
+/* -------- STICKY pre-order CTA -------- */
+(() => {
+  const cta = document.querySelector('[data-sticky-cta]');
+  const hero = document.querySelector('#hero');
+  const formaty = document.querySelector('#formaty');
+  if (!cta || !hero || !formaty) return;
+
+  const update = () => {
+    const heroBottom = hero.getBoundingClientRect().bottom;
+    const formatyTop = formaty.getBoundingClientRect().top;
+    const vh = window.innerHeight;
+    // pokaż po przewinięciu hero, ukryj gdy formaty są na ekranie (user już tam jest)
+    const show = heroBottom < 0 && formatyTop > vh * 0.5;
+    cta.classList.toggle('is-visible', show);
+  };
+  addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+  update();
+})();
+
 /* -------- PAUSE heavy animations when out of viewport (saving CPU) -------- */
 (() => {
   if (REDUCED) return;

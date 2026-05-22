@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=8" />
+<link rel="stylesheet" href="styles.css?v=9" />
 </head>
 <body>
 
@@ -592,6 +592,21 @@
     <div class="section__sub mono">PRE-ORDER · WYSYŁKA OD 09.06.2026</div>
   </div>
 
+  <!-- Banner z info o wysyłce -->
+  <aside class="ship-banner" data-reveal aria-label="Informacja o wysyłce">
+    <div class="ship-banner__row">
+      <span class="ship-banner__pulse"></span>
+      <span class="ship-banner__label mono">PRE-ORDER OTWARTY</span>
+    </div>
+    <div class="ship-banner__main serif">
+      Wysyłka zaczyna się <span class="accent">9 czerwca 2026</span>
+    </div>
+    <div class="ship-banner__sub">
+      Zarezerwuj swój egzemplarz już teraz — wszystkie zamówienia trafiają na półkę w dniu premiery.
+      Liczba egzemplarzy <em>limitowana</em>.
+    </div>
+  </aside>
+
   <div class="formats">
     <article class="fmt" data-reveal data-tilt>
       <div class="fmt__badge mono">01 · DRUK</div>
@@ -753,6 +768,13 @@
 
 </main>
 
+<!-- Sticky CTA — widoczny po pierwszym ekranie -->
+<a href="#formaty" class="sticky-cta mono" data-magnetic data-sticky-cta aria-label="Zarezerwuj LIBER">
+  <span class="sticky-cta__dot"></span>
+  <span class="sticky-cta__text">Zarezerwuj LIBER</span>
+  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+</a>
+
 <!-- ===================== FOOTER ===================== -->
 <footer class="foot">
   <div class="foot__inner">
@@ -776,6 +798,6 @@
   </div>
 </footer>
 
-<script src="script.js?v=13"></script>
+<script src="script.js?v=14"></script>
 </body>
 </html>
