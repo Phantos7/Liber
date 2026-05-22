@@ -1,0 +1,8 @@
+name = "liber-edit"
+main = "src/index.js"
+compatibility_date = "2024-12-01"
+workers_dev = true
+
+# Sekrety (ustawiane przez `wrangler secret put`):
+#   GITHUB_TOKEN     — fine-grained PAT z Contents: Read & Write na Phantos7/Liber
+#   ADMIN_PASSWORD   — hasło dla Joanny (i Ciebie)

@@ -31,15 +31,13 @@
 <div class="modal" id="auth-modal" hidden>
   <div class="modal__box">
     <h1 class="modal__title">Witaj w panelu edycji</h1>
-    <p class="modal__lede">Wpisz <strong>hasło</strong>, które dostałaś od osoby zarządzającej stroną.</p>
-    <label class="modal__label" for="auth-password">Hasło</label>
+    <p class="modal__lede">Zaloguj się żeby edytować treści na stronie LIBER.</p>
+    <label class="modal__label" for="auth-login">Login</label>
+    <input id="auth-login" type="text" placeholder="Joanna" autocomplete="username" spellcheck="false" autocapitalize="off" />
+    <label class="modal__label" for="auth-password" style="margin-top:14px">Hasło</label>
     <input id="auth-password" type="password" placeholder="•••••••••••" autocomplete="current-password" spellcheck="false" />
     <button type="button" class="modal__btn" id="auth-submit">Zaloguj</button>
-    <p class="modal__note" id="auth-note">Hasło odszyfrowuje dostęp do GitHub. Nie zapisujemy go nigdzie — pamiętamy tylko podczas tej sesji.</p>
-    <details class="modal__help" id="auth-setup-help" hidden>
-      <summary>Jestem administratorem – nie mam jeszcze pliku z tokenem</summary>
-      <p style="margin:10px 0 0;color:var(--fog);line-height:1.6">Otwórz <a href="setup.html">setup.html</a>, raz wygeneruj zaszyfrowany <code>token.json</code> i wrzuć go do katalogu <code>admin/</code>. Joanna potem loguje się tylko hasłem które tam ustalisz.</p>
-    </details>
+    <p class="modal__note" id="auth-note">Sesja trwa 6 godzin, potem znów poprosi o login.</p>
   </div>
 </div>
 
@@ -87,7 +85,6 @@
 
 <div class="toast" id="toast" hidden></div>
 
-<script src="crypto.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

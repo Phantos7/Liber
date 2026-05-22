@@ -2,11 +2,9 @@
    LIBER — panel edycji (app.js) — iteracja 2
    ===================================================== */
 
-const REPO = 'Phantos7/Liber';
-const BRANCH = 'main';
-const FILE_PATH = 'index.html';
-const API = 'https://api.github.com';
+const API = 'https://liber-edit.patdimension.workers.dev';
 const DRAFT_PREFIX = 'liber-draft-';
+const SESSION_KEY = 'liber-session';
 const DRAFT_DEBOUNCE = 500;
 const MAX_DRAFTS = 5;
 
@@ -222,50 +220,56 @@ function sanitizeHTML(html) {
   return tpl.innerHTML;
 }
 
-/* ---------- auth (password + encrypted token from token.json) ---------- */
-let encryptedTokenPayload = null;
-
-async function fetchEncryptedToken() {
-  if (encryptedTokenPayload) return encryptedTokenPayload;
+/* ---------- auth (login + hasło → sesja z Worker) ---------- */
+function loadSession() {
   try {
-    const r = await fetch('token.json?t=' + Date.now());
-    if (!r.ok) throw new Error('Brak pliku token.json — administrator musi przejść setup (admin/setup.html)');
-    encryptedTokenPayload = await r.json();
-    return encryptedTokenPayload;
-  } catch (e) {
-    throw e;
-  }
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    if (s.expiresAt && s.expiresAt > Date.now()) return s;
+    sessionStorage.removeItem(SESSION_KEY);
+    return null;
+  } catch { return null; }
+}
+function saveSession(s) {
+  try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(s)); } catch (_) {}
+}
+function clearSession() {
+  try { sessionStorage.removeItem(SESSION_KEY); } catch (_) {}
 }
 
 function checkAuth() {
-  // Każde wejście pyta o hasło — token nie jest persistowany.
+  const s = loadSession();
+  if (s) { state.token = s.token; return true; }
   $('#auth-modal').hidden = false;
-  // Pre-fetch encrypted payload żeby od razu poinformować o braku setupu.
-  fetchEncryptedToken().catch(err => {
-    const note = $('#auth-note');
-    const help = $('#auth-setup-help');
-    if (note) note.textContent = err.message;
-    if (help) help.hidden = false;
-    $('#auth-submit').disabled = true;
-  });
   return false;
 }
 
 async function authSubmit() {
-  const pw = $('#auth-password').value;
-  if (!pw) { showToast('Wpisz hasło', 'error'); return; }
+  const login = $('#auth-login').value.trim();
+  const password = $('#auth-password').value;
+  if (!login || !password) { showToast('Podaj login i hasło', 'error'); return; }
   const btn = $('#auth-submit');
   btn.disabled = true;
   btn.textContent = 'Loguję…';
   try {
-    const payload = await fetchEncryptedToken();
-    const token = await window.LiberCrypto.decryptToken(payload, pw);
-    state.token = token;
+    const r = await fetch(`${API}/api/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ login, password }),
+    });
+    if (!r.ok) {
+      const data = await r.json().catch(() => ({}));
+      throw new Error(data.msg || `Logowanie nieudane (${r.status})`);
+    }
+    const data = await r.json();
+    state.token = data.token;
+    saveSession({ token: data.token, expiresAt: data.expiresAt, login: data.login });
     $('#auth-modal').hidden = true;
     $('#auth-password').value = '';
     load(state.pendingSave ? () => save() : null);
   } catch (e) {
-    showToast(e.message || 'Nieprawidłowe hasło', 'error');
+    showToast(e.message || 'Błąd logowania', 'error');
   } finally {
     btn.disabled = false;
     btn.textContent = 'Zaloguj';
@@ -276,23 +280,21 @@ function logout() {
   const hasChanges = state.mutations.size > 0 || hiddenDiff().length > 0;
   if (hasChanges && !confirm('Masz niezapisane zmiany. Na pewno wyloguj?')) return;
   state.token = null;
+  clearSession();
   location.reload();
 }
 
-/* ---------- load ---------- */
+/* ---------- load (przez Workera) ---------- */
 async function load(onReady) {
   showLoading(true, 'Pobieram aktualną treść strony…');
   try {
-    const r = await fetch(`${API}/repos/${REPO}/contents/${FILE_PATH}?ref=${BRANCH}&t=${Date.now()}`, {
-      headers: {
-        'Authorization': `Bearer ${state.token}`,
-        'Accept': 'application/vnd.github.v3+json',
-      }
+    const r = await fetch(`${API}/api/file`, {
+      headers: { 'Authorization': `Bearer ${state.token}` }
     });
     if (r.status === 401 || r.status === 403) {
-      throw new Error('Token nieautoryzowany. Wygeneruj nowy z prawami Contents · Read & Write.');
+      throw new Error('Sesja wygasła. Zaloguj ponownie.');
     }
-    if (!r.ok) throw new Error(`Błąd GitHub API (${r.status})`);
+    if (!r.ok) throw new Error(`Błąd serwera (${r.status})`);
     const data = await r.json();
     state.sha = data.sha;
     state.rawHtml = decodeBase64(data.content);
@@ -901,18 +903,16 @@ async function attemptSave(baseHtml, baseSha, retries) {
     });
   }
 
-  // 2. PUT
+  // 2. PUT przez Workera
   const body = {
     message: `Edycja treści (${state.mutations.size} pól${hiddenDiff().length ? ', ' + hiddenDiff().length + ' sekcji' : ''})`,
     content: encodeBase64(newHtml),
     sha: baseSha,
-    branch: BRANCH,
   };
-  const r = await fetch(`${API}/repos/${REPO}/contents/${FILE_PATH}`, {
+  const r = await fetch(`${API}/api/file`, {
     method: 'PUT',
     headers: {
       'Authorization': `Bearer ${state.token}`,
-      'Accept': 'application/vnd.github.v3+json',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
@@ -920,26 +920,25 @@ async function attemptSave(baseHtml, baseSha, retries) {
 
   if (r.status === 409 && retries > 0) {
     // Refetch latest and try once more
-    const refresh = await fetch(`${API}/repos/${REPO}/contents/${FILE_PATH}?ref=${BRANCH}&t=${Date.now()}`, {
-      headers: { 'Authorization': `Bearer ${state.token}`, 'Accept': 'application/vnd.github.v3+json' }
+    const refresh = await fetch(`${API}/api/file`, {
+      headers: { 'Authorization': `Bearer ${state.token}` }
     });
     if (!refresh.ok) throw Object.assign(new Error('Konflikt — odśwież panel.'), { statusCode: 409 });
     const fresh = await refresh.json();
     const freshHtml = decodeBase64(fresh.content);
-    // Check if our originalOuterHTMLs still exist in the fresh file
     const allFound = Array.from(state.mutations.values()).every(m => freshHtml.includes(m.originalOuterHTML));
     if (!allFound) throw Object.assign(new Error('Treści zostały zmienione w trakcie edycji.'), { statusCode: 409 });
     return attemptSave(freshHtml, fresh.sha, retries - 1);
   }
   if (r.status === 401 || r.status === 403) {
-    throw Object.assign(new Error('Brak uprawnień'), { statusCode: r.status });
+    throw Object.assign(new Error('Sesja wygasła'), { statusCode: r.status });
   }
   if (!r.ok) {
     const txt = await r.text();
     throw new Error(`Błąd zapisu (${r.status}): ${txt.slice(0, 140)}`);
   }
   const result = await r.json();
-  return { newHtml, newSha: result.content.sha };
+  return { newHtml, newSha: result.sha };
 }
 
 function showConflictModal() {
@@ -961,6 +960,7 @@ window.addEventListener('beforeunload', e => {
 
 /* ---------- init ---------- */
 $('#auth-submit').addEventListener('click', authSubmit);
+$('#auth-login').addEventListener('keydown', e => { if (e.key === 'Enter') $('#auth-password').focus(); });
 $('#auth-password').addEventListener('keydown', e => { if (e.key === 'Enter') authSubmit(); });
 $('#btn-save').addEventListener('click', save);
 $('#btn-logout').addEventListener('click', logout);
@@ -999,3 +999,4 @@ document.addEventListener('keydown', e => {
 });
 
 if (checkAuth()) load();
+else { /* modal already shown */ }
