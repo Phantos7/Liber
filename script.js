@@ -15,7 +15,7 @@ const NO_HOVER = matchMedia('(hover: none), (max-width: 900px)').matches;
 
   let target = 0, current = 0, loaded = false, done = false;
   const startTime = performance.now();
-  const MIN_DURATION = 700;
+  const MIN_DURATION = 350;
 
   const finish = () => {
     if (done) return;
@@ -47,13 +47,18 @@ const NO_HOVER = matchMedia('(hover: none), (max-width: 900px)').matches;
   };
   requestAnimationFrame(tick);
 
-  if (document.readyState === 'complete') loaded = true;
-  else window.addEventListener('load', () => { loaded = true; });
+  // Kończymy gdy DOM gotowy — nie czekamy na obrazy ani wideo.
+  // Hero img i klipy doczytują się w tle, bez blokowania UI.
+  if (document.readyState === 'interactive' || document.readyState === 'complete') {
+    loaded = true;
+  } else {
+    document.addEventListener('DOMContentLoaded', () => { loaded = true; });
+  }
 
-  // safety net — never block more than 2.5s waiting for resources
-  setTimeout(() => { loaded = true; }, 2500);
-  // hard kill — force hide after 4.5s no matter what
-  setTimeout(() => finish(), 4500);
+  // safety net — fallback po 1.2s
+  setTimeout(() => { loaded = true; }, 1200);
+  // hard kill — pełne ukrycie po 2.5s
+  setTimeout(() => finish(), 2500);
 })();
 
 /* -------- NAV scroll -------- */
