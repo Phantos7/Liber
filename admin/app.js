@@ -178,37 +178,47 @@ function showLoading(visible, label) {
 }
 function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
-/* ---------- sanitize paste ---------- */
+/* ---------- sanitize paste (iteracyjny — bezpieczny po unwrap) ---------- */
 function sanitizeHTML(html) {
   const tpl = document.createElement('template');
   tpl.innerHTML = html;
-  const walk = (node) => {
-    [...node.childNodes].forEach(child => {
-      if (child.nodeType === 1) {
-        if (!ALLOWED_INLINE_TAGS.has(child.tagName)) {
-          // unwrap
-          const frag = document.createDocumentFragment();
-          while (child.firstChild) frag.appendChild(child.firstChild);
-          child.replaceWith(frag);
-          return;
-        }
-        // strip attributes except class (whitelist)
-        [...child.attributes].forEach(attr => {
-          if (attr.name === 'class') {
-            const cls = attr.value.split(/\s+/).filter(c => ALLOWED_INLINE_CLASSES.includes(c)).join(' ');
-            if (cls) child.setAttribute('class', cls);
-            else child.removeAttribute('class');
-          } else {
-            child.removeAttribute(attr.name);
-          }
-        });
-        walk(child);
-      } else if (child.nodeType === 8) {
-        child.remove(); // comments
+
+  // Iteracyjnie unwrapuj zakazane elementy aż nie zostanie żaden.
+  // Restart pętli po każdej zmianie, bo NodeList się dezaktualizuje.
+  let found = true;
+  while (found) {
+    found = false;
+    const all = tpl.content.querySelectorAll('*');
+    for (const el of all) {
+      if (!ALLOWED_INLINE_TAGS.has(el.tagName)) {
+        const parent = el.parentNode;
+        while (el.firstChild) parent.insertBefore(el.firstChild, el);
+        parent.removeChild(el);
+        found = true;
+        break;
+      }
+    }
+  }
+
+  // Wyczyść atrybuty wszystkich pozostałych elementów (zostaje tylko whitelistowana klasa).
+  tpl.content.querySelectorAll('*').forEach(el => {
+    [...el.attributes].forEach(attr => {
+      if (attr.name === 'class') {
+        const cls = attr.value.split(/\s+/).filter(c => ALLOWED_INLINE_CLASSES.includes(c)).join(' ');
+        if (cls) el.setAttribute('class', cls);
+        else el.removeAttribute('class');
+      } else {
+        el.removeAttribute(attr.name);
       }
     });
-  };
-  walk(tpl.content);
+  });
+
+  // Usuń komentarze.
+  const walker = document.createTreeWalker(tpl.content, NodeFilter.SHOW_COMMENT);
+  const comments = [];
+  while (walker.nextNode()) comments.push(walker.currentNode);
+  comments.forEach(c => c.remove());
+
   return tpl.innerHTML;
 }
 
@@ -526,7 +536,11 @@ function render() {
 }
 
 function renderField(field, sectionId) {
-  const { key, label, originalInnerHTML } = field;
+  // UWAGA: nie destrukturyzujemy `field.originalInnerHTML` ani `originalOuterHTML`,
+  // bo te wartości są aktualizowane przez refreshBaselines() po udanym zapisie.
+  // Trzymamy referencję do `field` i czytamy aktualne wartości w handlerach.
+  const key = field.key;
+  const label = field.label;
 
   const wrap = document.createElement('div');
   wrap.className = 'field';
@@ -539,7 +553,7 @@ function renderField(field, sectionId) {
   wrap.appendChild(lbl);
 
   // Detect rich content (has inline markup) — show toolbar if so OR if textContent is long
-  const hasMarkup = /<(em|strong|i|b|span)\b/i.test(originalInnerHTML);
+  const hasMarkup = /<(em|strong|i|b|span)\b/i.test(field.originalInnerHTML);
   const text = field.element.textContent.trim();
   const isLong = text.length > 80;
   const isMono = field.element.matches('.mono, .ticker__item, .syn__chip, .quote__meta, .dossier__role, .dossier__rank, .dossier__code, .tome__sub, .fmt__meta, .case__v, .case__k, .live-badge, .countdown__label, .case__filehead span, .author__contact a, .final__date, .foot__sub, .section__num, .section__sub, .syn__num, .author__num, .preorder__label, .preorder__check span, .case__stamp, .case__sub, .author__plate-sub, .author__plate-tag, .hero__packshot-tag, .hero__packshot-code, .dossier__chart-k, .dossier__chart-v, .dossier__tags span, .dossier__portrait-tag, .fmt__badge, .fmt__ribbon, .aspects__head span');
@@ -550,12 +564,12 @@ function renderField(field, sectionId) {
     toolbar = document.createElement('div');
     toolbar.className = 'editor__toolbar';
     toolbar.innerHTML = `
-      <button type="button" class="editor__tool" data-cmd="bold" title="Pogrub (Ctrl+B)"><strong>B</strong></button>
-      <button type="button" class="editor__tool" data-cmd="italic" title="Kursywa (Ctrl+I)"><em>I</em></button>
-      <button type="button" class="editor__tool" data-cmd="hl" title="Podświetl jadowicie">▒</button>
-      <button type="button" class="editor__tool" data-cmd="clear" title="Usuń formatowanie">⌫</button>
-      <span class="editor__sep"></span>
-      <button type="button" class="editor__tool editor__tool--reset" data-cmd="reset" title="Wróć do oryginału">↺</button>
+      <button type="button" class="editor__tool" data-cmd="bold"   aria-label="Pogrub zaznaczenie"     title="Pogrub (Ctrl+B)"><strong>B</strong></button>
+      <button type="button" class="editor__tool" data-cmd="italic" aria-label="Kursywa zaznaczenia"   title="Kursywa (Ctrl+I)"><em>I</em></button>
+      <button type="button" class="editor__tool" data-cmd="hl"     aria-label="Podświetl jadowicie"   title="Podświetl">▒</button>
+      <button type="button" class="editor__tool" data-cmd="clear"  aria-label="Usuń formatowanie"     title="Usuń formatowanie">⌫</button>
+      <span class="editor__sep" aria-hidden="true"></span>
+      <button type="button" class="editor__tool editor__tool--reset" data-cmd="reset" aria-label="Wróć do oryginalnej treści" title="Cofnij do oryginału">↺</button>
     `;
     wrap.appendChild(toolbar);
   }
@@ -569,7 +583,7 @@ function renderField(field, sectionId) {
   editor.contentEditable = 'true';
   editor.spellcheck = true;
   editor.lang = 'pl';
-  editor.innerHTML = originalInnerHTML;
+  editor.innerHTML = field.originalInnerHTML;
 
   // Paste: zachowaj kursywę / pogrubienie z Worda (sanityzacja whitelistą),
   // resztę spłaszcz do plain text.
@@ -594,7 +608,7 @@ function renderField(field, sectionId) {
   // Input → mutation
   editor.addEventListener('input', () => {
     const newHTML = editor.innerHTML;
-    if (newHTML === originalInnerHTML) {
+    if (newHTML === field.originalInnerHTML) {
       state.mutations.delete(key);
       wrap.classList.remove('is-changed');
     } else {
@@ -631,7 +645,7 @@ function renderField(field, sectionId) {
         else if (cmd === 'hl') wrapSelectionWithSpan(editor, 'hl');
         else if (cmd === 'clear') document.execCommand('removeFormat', false);
         else if (cmd === 'reset') {
-          editor.innerHTML = originalInnerHTML;
+          editor.innerHTML = field.originalInnerHTML;
           editor.dispatchEvent(new Event('input'));
         }
       });
