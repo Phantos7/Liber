@@ -47,18 +47,32 @@ const NO_HOVER = matchMedia('(hover: none), (max-width: 900px)').matches;
   };
   requestAnimationFrame(tick);
 
-  // Kończymy gdy DOM gotowy — nie czekamy na obrazy ani wideo.
-  // Hero img i klipy doczytują się w tle, bez blokowania UI.
-  if (document.readyState === 'interactive' || document.readyState === 'complete') {
-    loaded = true;
+  // Czekamy tylko na obrazy w pierwszym ekranie (hero bg + okładka).
+  // Wideo (sekcja Fabuła) doczytuje się później — nie blokuje loadera.
+  const waitForHeroImages = () => {
+    const imgs = document.querySelectorAll('.hero__bg-img, .hero__packshot-img');
+    if (!imgs.length) return Promise.resolve();
+    return Promise.all(Array.from(imgs).map(img =>
+      img.complete && img.naturalWidth > 0
+        ? Promise.resolve()
+        : new Promise(res => {
+            img.addEventListener('load',  res, { once: true });
+            img.addEventListener('error', res, { once: true });
+          })
+    ));
+  };
+
+  const start = () => waitForHeroImages().then(() => { loaded = true; });
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start, { once: true });
   } else {
-    document.addEventListener('DOMContentLoaded', () => { loaded = true; });
+    start();
   }
 
-  // safety net — fallback po 1.2s
-  setTimeout(() => { loaded = true; }, 1200);
-  // hard kill — pełne ukrycie po 2.5s
-  setTimeout(() => finish(), 2500);
+  // safety net — fallback po 2.5s gdyby obraz nigdy się nie załadował
+  setTimeout(() => { loaded = true; }, 2500);
+  // hard kill — pełne ukrycie po 4s
+  setTimeout(() => finish(), 4000);
 })();
 
 /* -------- NAV scroll -------- */
