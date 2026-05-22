@@ -222,28 +222,60 @@ function sanitizeHTML(html) {
   return tpl.innerHTML;
 }
 
-/* ---------- auth ---------- */
-function checkAuth() {
-  state.token = localStorage.getItem('liber-pat');
-  if (!state.token) {
-    $('#auth-modal').hidden = false;
-    return false;
+/* ---------- auth (password + encrypted token from token.json) ---------- */
+let encryptedTokenPayload = null;
+
+async function fetchEncryptedToken() {
+  if (encryptedTokenPayload) return encryptedTokenPayload;
+  try {
+    const r = await fetch('token.json?t=' + Date.now());
+    if (!r.ok) throw new Error('Brak pliku token.json — administrator musi przejść setup (admin/setup.html)');
+    encryptedTokenPayload = await r.json();
+    return encryptedTokenPayload;
+  } catch (e) {
+    throw e;
   }
-  return true;
 }
-function authSubmit() {
-  const tok = $('#auth-token').value.trim();
-  if (!tok) { showToast('Wpisz token', 'error'); return; }
-  localStorage.setItem('liber-pat', tok);
-  state.token = tok;
-  $('#auth-modal').hidden = true;
-  $('#auth-token').value = '';
-  load(state.pendingSave ? () => save() : null);
+
+function checkAuth() {
+  // Każde wejście pyta o hasło — token nie jest persistowany.
+  $('#auth-modal').hidden = false;
+  // Pre-fetch encrypted payload żeby od razu poinformować o braku setupu.
+  fetchEncryptedToken().catch(err => {
+    const note = $('#auth-note');
+    const help = $('#auth-setup-help');
+    if (note) note.textContent = err.message;
+    if (help) help.hidden = false;
+    $('#auth-submit').disabled = true;
+  });
+  return false;
 }
+
+async function authSubmit() {
+  const pw = $('#auth-password').value;
+  if (!pw) { showToast('Wpisz hasło', 'error'); return; }
+  const btn = $('#auth-submit');
+  btn.disabled = true;
+  btn.textContent = 'Loguję…';
+  try {
+    const payload = await fetchEncryptedToken();
+    const token = await window.LiberCrypto.decryptToken(payload, pw);
+    state.token = token;
+    $('#auth-modal').hidden = true;
+    $('#auth-password').value = '';
+    load(state.pendingSave ? () => save() : null);
+  } catch (e) {
+    showToast(e.message || 'Nieprawidłowe hasło', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Zaloguj';
+  }
+}
+
 function logout() {
   const hasChanges = state.mutations.size > 0 || hiddenDiff().length > 0;
   if (hasChanges && !confirm('Masz niezapisane zmiany. Na pewno wyloguj?')) return;
-  localStorage.removeItem('liber-pat');
+  state.token = null;
   location.reload();
 }
 
@@ -296,7 +328,7 @@ async function load(onReady) {
   } catch (err) {
     showToast(err.message, 'error');
     if (/(401|403|nieautoryzowany)/i.test(err.message)) {
-      localStorage.removeItem('liber-pat');
+      state.token = null;
       $('#auth-modal').hidden = false;
     }
   } finally {
@@ -817,7 +849,7 @@ async function save() {
   } catch (err) {
     if (/(401|403)/i.test(err.message) || err.statusCode === 401 || err.statusCode === 403) {
       state.pendingSave = true;
-      localStorage.removeItem('liber-pat');
+      state.token = null;
       $('#auth-modal').hidden = false;
       showToast('Token wygasł. Zaloguj ponownie żeby dokończyć zapis.', 'error');
     } else if (err.statusCode === 409) {
@@ -929,7 +961,7 @@ window.addEventListener('beforeunload', e => {
 
 /* ---------- init ---------- */
 $('#auth-submit').addEventListener('click', authSubmit);
-$('#auth-token').addEventListener('keydown', e => { if (e.key === 'Enter') authSubmit(); });
+$('#auth-password').addEventListener('keydown', e => { if (e.key === 'Enter') authSubmit(); });
 $('#btn-save').addEventListener('click', save);
 $('#btn-logout').addEventListener('click', logout);
 $('#save-modal-close').addEventListener('click', () => $('#save-modal').hidden = true);
