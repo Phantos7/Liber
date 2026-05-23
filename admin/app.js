@@ -639,9 +639,19 @@ function renderField(field, sectionId) {
     }
   });
 
-  // Input → mutation
+  // Input → mutation (z czyszczeniem <div> które przeglądarka wstawia przy Enter)
   editor.addEventListener('input', () => {
-    const newHTML = editor.innerHTML;
+    let newHTML = editor.innerHTML;
+    // Zamień <div>...</div> na <br>treść<br> żeby nie zepsuć struktury <p>
+    // (przeglądarki czasami wstawiają <div> przy Enter mimo naszego handlera)
+    if (/<div\b/i.test(newHTML)) {
+      newHTML = newHTML
+        .replace(/<div[^>]*>(<br\s*\/?>)?<\/div>/gi, '<br>')   // <div><br></div> → <br>
+        .replace(/<div[^>]*>/gi, '<br>')                       // <div> → <br>
+        .replace(/<\/div>/gi, '')                              // </div> → ''
+        .replace(/^(<br\s*\/?>)+/, '')                         // usuń wiodące <br>
+        .replace(/(<br\s*\/?>)+$/, '');                        // usuń końcowe <br>
+    }
     if (newHTML === field.originalInnerHTML) {
       state.mutations.delete(key);
       wrap.classList.remove('is-changed');
@@ -656,14 +666,17 @@ function renderField(field, sectionId) {
     saveDraftDebounced();
   });
 
-  // Block Enter for single-line fields (mono / short)
-  if (!isLong) {
-    editor.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-      }
-    });
-  }
+  // Enter handling:
+  // - krótkie pola: blokuj
+  // - długie pola: wstaw <br> zamiast domyślnego <div> przeglądarki (psuje strukturę <p>)
+  editor.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      if (!isLong) { e.preventDefault(); return; }
+      // długie: wstaw <br>, nie <div>
+      e.preventDefault();
+      document.execCommand('insertHTML', false, '<br>');
+    }
+  });
 
   wrap.appendChild(editor);
 
