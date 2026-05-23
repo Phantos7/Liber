@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=10" />
+<link rel="stylesheet" href="styles.css?v=11" />
 </head>
 <body>
 
@@ -760,12 +760,19 @@ Samotna, cierpi na syndrom ocalałego. Na złe uodporniła się w pracy, dobre p
       </div>
     </div>
     <div class="author__col author__col--mark" data-reveal>
-      <div class="author__plate">
-        <div class="author__plate-tag mono">SIGNATURE</div>
-        <div class="author__plate-name serif">J.F. Bielak</div>
-        <div class="author__plate-line"></div>
-        <div class="author__plate-sub mono">CYKL · BIURO POSZUKIWAŃ KGP</div>
-      </div>
+      <figure class="author__photo">
+        <picture>
+          <source srcset="assets/author-joanna.avif" type="image/avif" />
+          <img src="assets/author-joanna.webp" alt="Joanna F. Bielak — portret" loading="lazy" decoding="async" />
+        </picture>
+        <figcaption class="author__photo-credit mono">fot. <a href="https://theye.pl" target="_blank" rel="noopener">Angelika Kubik · Theye.pl</a></figcaption>
+        <div class="author__photo-plate">
+          <div class="author__plate-tag mono">SIGNATURE</div>
+          <div class="author__plate-name serif">J.F. Bielak</div>
+          <div class="author__plate-line"></div>
+          <div class="author__plate-sub mono">CYKL · BIURO POSZUKIWAŃ KGP</div>
+        </div>
+      </figure>
     </div>
   </div>
 </section>
@@ -816,6 +823,6 @@ Samotna, cierpi na syndrom ocalałego. Na złe uodporniła się w pracy, dobre p
   </div>
 </footer>
 
-<script src="script.js?v=15"></script>
+<script src="script.js?v=16"></script>
 </body>
 </html>
