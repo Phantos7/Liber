@@ -423,6 +423,14 @@ const NO_HOVER = matchMedia('(hover: none), (max-width: 900px)').matches;
 (() => {
   if (window.parent === window) return; // standalone — nic nie wysyłaj
 
+  // KLUCZOWE: zafiksowanie "viewport height" zanim parent przeskaluje iframe.
+  // Bez tego hero z `min-height: 100vh` rośnie razem z wysokością iframe
+  // → scrollHeight rośnie → parent rośnie → pętla. Z `--liber-vh` wszystko stoi.
+  const root = document.documentElement;
+  const lockedVh = Math.max(640, Math.min(window.innerHeight || 800, 960));
+  root.style.setProperty('--liber-vh', lockedVh + 'px');
+  root.classList.add('liber-embedded');
+
   let last = 0;
   const measure = () => Math.max(
     document.documentElement.scrollHeight,

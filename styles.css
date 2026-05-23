@@ -273,6 +273,11 @@ html.js .loader { display: flex; }
   overflow: hidden;
   isolation: isolate;
 }
+/* W trybie iframe: zablokowana wysokość zamiast 100vh (parent ustala viewport) */
+html.liber-embedded .hero {
+  min-height: var(--liber-vh, 800px);
+}
+html.liber-embedded .hero__content { padding-top: 32px; }
 .hero__bg {
   position: absolute; inset: -8%;
   z-index: -3;
