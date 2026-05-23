@@ -413,3 +413,47 @@ const NO_HOVER = matchMedia('(hover: none), (max-width: 900px)').matches;
     });
   });
 })();
+
+/* ===========================================================
+ * Iframe auto-resize (postMessage)
+ * Gdy LIBER jest osadzony jako iframe (np. metafora.pl/premiera/),
+ * wysyła wysokość treści do parent — parent dopasowuje height iframe,
+ * dzięki czemu scroll przewija naturalnie cały landing + footer hosta.
+ * =========================================================== */
+(() => {
+  if (window.parent === window) return; // standalone — nic nie wysyłaj
+
+  let last = 0;
+  const measure = () => Math.max(
+    document.documentElement.scrollHeight,
+    document.body ? document.body.scrollHeight : 0,
+    document.documentElement.offsetHeight,
+    document.body ? document.body.offsetHeight : 0
+  );
+  const send = () => {
+    const h = measure();
+    if (!Number.isFinite(h) || h <= 0) return;
+    if (Math.abs(h - last) < 4) return;
+    last = h;
+    try { window.parent.postMessage({ type: 'liber:resize', height: h }, '*'); } catch (_) {}
+  };
+
+  const burst = () => {
+    send();
+    setTimeout(send, 200);
+    setTimeout(send, 800);
+    setTimeout(send, 2000);
+    setTimeout(send, 5000); // po lazy images / fonts
+  };
+  if (document.readyState === 'complete') burst();
+  else window.addEventListener('load', burst, { once: true });
+
+  if ('ResizeObserver' in window) {
+    const ro = new ResizeObserver(() => send());
+    ro.observe(document.documentElement);
+    if (document.body) ro.observe(document.body);
+  }
+  window.addEventListener('resize', send);
+  // Bezpiecznik dla zmian wymuszonych JS-em (mobile menu, video aspect, accordion)
+  setInterval(send, 1500);
+})();
