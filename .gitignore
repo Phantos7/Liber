@@ -23,3 +23,9 @@ worker/node_modules/
 # Tools/build
 .tools/node_modules/
 .tools/package-lock.json
+
+# Lokalne sekrety — NIGDY nie commitować
+CREDENTIALS.local.md
+*.local.md
+.env
+.env.*
