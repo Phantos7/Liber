@@ -1537,18 +1537,20 @@ html.js .loader { display: flex; }
 .author__contact a:hover { border-color: var(--liber); }
 .author__sep { color: var(--fog-2); }
 
-/* Foto Joanny — case-file style */
+/* Foto Joanny — case-file style, mniejszy rozmiar */
 .author__photo {
   position: relative;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
+  width: 100%;
+  max-width: 320px;
   display: flex; flex-direction: column;
   background: var(--abyss);
   border: 1px solid rgba(200,230,46,.22);
   isolation: isolate;
 }
 .author__photo::before, .author__photo::after {
-  content:''; position: absolute; width: 18px; height: 18px;
+  content:''; position: absolute; width: 16px; height: 16px;
   border: 1.5px solid var(--liber);
   pointer-events: none;
   z-index: 3;
@@ -1571,28 +1573,31 @@ html.js .loader { display: flex; }
   filter: contrast(1.08) saturate(1);
 }
 .author__photo-credit {
+  display: flex; align-items: center;
+  gap: 8px;
   font-size: 9px;
   color: var(--fog-2);
-  padding: 10px 16px;
+  padding: 9px 14px;
   border-top: 1px solid rgba(200,230,46,.12);
-  background: rgba(11,26,19,.6);
-  letter-spacing: .14em;
+  background: rgba(11,26,19,.55);
+  letter-spacing: .12em;
+}
+.author__photo-credit-label {
+  color: var(--liber);
+  font-weight: 500;
 }
 .author__photo-credit a {
-  color: var(--liber);
+  color: var(--bone-2);
   text-decoration: none;
   border-bottom: 1px solid transparent;
-  transition: border-color .25s;
+  transition: border-color .25s, color .25s;
 }
-.author__photo-credit a:hover { border-bottom-color: var(--liber); }
-.author__photo-plate {
-  padding: 22px 24px;
-  background:
-    repeating-linear-gradient(45deg, rgba(255,255,255,.015) 0 2px, transparent 2px 8px),
-    linear-gradient(135deg, rgba(20,36,28,.8), rgba(11,26,19,.9));
-  border-top: 1px solid rgba(200,230,46,.18);
-  text-align: center;
-  position: relative;
+.author__photo-credit a:hover {
+  color: var(--liber);
+  border-bottom-color: var(--liber);
+}
+@media (max-width: 900px) {
+  .author__photo { max-width: 260px; }
 }
 
 /* Zachowane dla kompatybilności (gdyby się gdzieś używało) */
