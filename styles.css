@@ -36,6 +36,14 @@ body {
 }
 html.js body { cursor: none; }
 @media (max-width: 900px) { html.js body { cursor: auto; } }
+/* W trybie iframe: systemowy kursor, custom cursor wyłączony (mysz "freezowała się" przy wyjściu z iframe) */
+html.liber-embedded body { cursor: auto !important; }
+html.liber-embedded .cursor,
+html.liber-embedded .cursor-dot { display: none !important; }
+html.liber-embedded a,
+html.liber-embedded button,
+html.liber-embedded .btn,
+html.liber-embedded [role="button"] { cursor: pointer !important; }
 
 .sr-only {
   position: absolute !important;

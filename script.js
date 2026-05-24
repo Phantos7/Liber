@@ -131,7 +131,10 @@ const NO_HOVER = matchMedia('(hover: none), (max-width: 900px)').matches;
   const c = document.querySelector('[data-cursor]');
   const d = document.querySelector('[data-cursor-dot]');
   if (!c || !d) return;
-  if (NO_HOVER || REDUCED) {
+  // W trybie iframe (embedded na metafora.pl/premiera/) custom cursor powoduje
+  // zacinanie się myszki — mysz wychodząc z iframe zostawia "zamrożony" cursor,
+  // a mix-blend-mode + rAF na ogromnym iframe jest drogie. Wracamy do systemowego.
+  if (window.parent !== window || NO_HOVER || REDUCED) {
     c.remove(); d.remove();
     document.documentElement.classList.add('no-cursor');
     return;
