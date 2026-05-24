@@ -52,7 +52,15 @@ html.liber-embedded .nav__links {
   background: var(--void) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  z-index: 9000 !important;
+  z-index: 9500 !important;
+}
+/* KRYTYCZNE: .nav ma backdrop-filter ktory tworzy CONTAINING BLOCK
+   dla position:fixed descendants. Mobile menu (.nav__links) pinowal sie
+   do .nav (waski pasek na top) zamiast do viewport, stad tlo tylko
+   pod napisami. Usuwamy filter w embedded — w iframe i tak nie potrzebny. */
+html.liber-embedded .nav {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .sr-only {
