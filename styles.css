@@ -255,16 +255,16 @@ html.js .loader { display: flex; }
   .nav__cta { display: none; }
   .nav__links {
     position: fixed; inset: 0;
-    background: rgba(6,12,8,.96);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    /* Pelne nieprzezroczyste tlo — w iframe semi-transparent + blur
+       powodowal, ze hero/ksiazka byly widoczne pod menu */
+    background: #060c08;
     flex-direction: column; justify-content: center; align-items: center;
     gap: 28px;
     padding: 80px 24px 40px;
     font-size: 14px; letter-spacing: .15em;
     opacity: 0; visibility: hidden;
     transition: opacity .4s var(--ease), visibility .4s;
-    z-index: 1000;
+    z-index: 9500;
   }
   .nav__links a {
     color: var(--bone);

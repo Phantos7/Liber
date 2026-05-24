@@ -11,7 +11,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=16" />
+<link rel="stylesheet" href="styles.css?v=17" />
+<script>
+  // Inline: dodaj klase liber-embedded natychmiast jezeli w iframe.
+  // Robimy to przed pelnym load script.js, zeby CSS od razu byl applikowany.
+  if (window.parent !== window) document.documentElement.classList.add('liber-embedded');
+</script>
 </head>
 <body>
 
