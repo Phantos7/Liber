@@ -46,6 +46,14 @@ html.liber-embedded .btn,
 html.liber-embedded [role="button"] { cursor: pointer !important; }
 /* Sticky CTA bezuzyteczne w iframe (sticky wzgledem viewport iframe, nie outer page) */
 html.liber-embedded .sticky-cta { display: none !important; }
+/* Mobile menu w iframe musi byc PELNIE nieprzezroczyste — semi-transparent + blur
+   w iframe powoduje, ze widac hero/ksiazke pod spodem. */
+html.liber-embedded .nav__links {
+  background: var(--void) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  z-index: 9000 !important;
+}
 
 .sr-only {
   position: absolute !important;
@@ -1307,7 +1315,14 @@ html.liber-embedded .hero__content { padding-top: 32px; }
   max-width: var(--maxw); margin: 0 auto;
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
 }
-@media (max-width: 900px) { .formats { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .formats { grid-template-columns: 1fr; gap: 16px; } }
+@media (max-width: 700px) {
+  .section--formats { padding-left: 12px; padding-right: 12px; }
+  .fmt { padding: 24px 18px; }
+  .fmt__cover { height: 240px; margin-bottom: 16px; }
+  .fmt__title { font-size: 22px; }
+  .fmt__ribbon { right: -42px; padding: 4px 36px; font-size: 8px; }
+}
 .fmt {
   background:
     repeating-linear-gradient(0deg, rgba(255,255,255,.012) 0 1px, transparent 1px 3px),
