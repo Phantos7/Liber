@@ -44,6 +44,8 @@ html.liber-embedded a,
 html.liber-embedded button,
 html.liber-embedded .btn,
 html.liber-embedded [role="button"] { cursor: pointer !important; }
+/* Sticky CTA bezuzyteczne w iframe (sticky wzgledem viewport iframe, nie outer page) */
+html.liber-embedded .sticky-cta { display: none !important; }
 
 .sr-only {
   position: absolute !important;

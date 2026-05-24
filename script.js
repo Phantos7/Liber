@@ -434,6 +434,28 @@ const NO_HOVER = matchMedia('(hover: none), (max-width: 900px)').matches;
   root.style.setProperty('--liber-vh', lockedVh + 'px');
   root.classList.add('liber-embedded');
 
+  // Hash-linki nav (#sprawa, #zespol, ...) w iframe nie maja gdzie scrollowac
+  // (iframe = full content height). Wysylamy postMessage do parent, niech parent
+  // przewinie OUTER page do `iframeTop + targetY`.
+  document.addEventListener('click', (e) => {
+    const a = e.target && e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href || href === '#' || href.length < 2) return;
+    const target = document.getElementById(href.slice(1));
+    if (!target) return;
+    e.preventDefault();
+    const targetY = target.getBoundingClientRect().top + window.scrollY;
+    try { window.parent.postMessage({ type: 'liber:scrollTo', y: targetY }, '*'); } catch (_) {}
+    // Zamknij mobile menu jesli otwarte
+    const nav = document.getElementById('nav-links');
+    const burger = document.querySelector('[data-burger]');
+    if (nav && nav.classList.contains('is-open')) {
+      nav.classList.remove('is-open');
+      if (burger) burger.setAttribute('aria-expanded', 'false');
+    }
+  }, true);
+
   let last = 0;
   const measure = () => Math.max(
     document.documentElement.scrollHeight,
