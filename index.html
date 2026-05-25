@@ -58,7 +58,7 @@
     <a href="#trylogia">Trylogia</a>
     <a href="#autorka">Autorka</a>
     <a href="#formaty">Pre-order</a>
-    <a href="#zapisy">Zapisy</a>
+    <!-- <a href="#zapisy">Zapisy</a> -- ukryte z formularzem rezerwacyjnym -->
   </nav>
   <a class="nav__cta mono" href="#formaty" data-magnetic>
     <span>Zamów</span>
@@ -691,8 +691,12 @@ Samotna, cierpi na syndrom ocalałego. Na złe uodporniła się w pracy, dobre p
   </div>
 </section>
 
-<!-- ===================== PREORDER FORM ===================== -->
-<section id="zapisy" class="section section--preorder" aria-labelledby="preorder-title">
+<!-- ===================== PREORDER FORM =====================
+     UKRYTE TYMCZASOWO — formularz uzywa mailto: (klient pocztowy).
+     ZEBY PRZYWROCIC: usun atrybut `hidden` ponizej + odkomentuj
+     <a href="#zapisy">Zapisy</a> w <nav class="nav__links">.
+     Docelowo: zintegrowac z Brevo/Mailchimp lub backend Cloudflare Worker. -->
+<section id="zapisy" class="section section--preorder" aria-labelledby="preorder-title" hidden>
   <div class="preorder-wrap">
     <div class="preorder__left" data-reveal>
       <div class="section__num mono">// LISTA REZERWACYJNA</div>
