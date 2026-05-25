@@ -456,6 +456,18 @@ const NO_HOVER = matchMedia('(hover: none), (max-width: 900px)').matches;
     }
   }, true);
 
+  // Burger menu w iframe: position:fixed mobile menu pinuje sie do iframe TOP
+  // (initial containing block iframe), nie do outer viewport. Jesli user jest
+  // scrollniety w iframe content (np. na sekcji Trylogia), tap burger pokazuje
+  // menu "u gory iframe" daleko od viewportu usera. Fix: jak burger jest tapnięty,
+  // wymus outer scroll do top iframe — wtedy menu otwiera sie w jego viewport.
+  const _burger = document.querySelector('[data-burger]');
+  if (_burger) {
+    _burger.addEventListener('click', () => {
+      try { window.parent.postMessage({ type: 'liber:scrollTo', y: 0 }, '*'); } catch (_) {}
+    });
+  }
+
   let last = 0;
   const measure = () => Math.max(
     document.documentElement.scrollHeight,
