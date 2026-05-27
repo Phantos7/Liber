@@ -63,6 +63,26 @@ html.liber-embedded .nav {
   -webkit-backdrop-filter: none !important;
 }
 
+/* ============================================================
+   PERFORMANCE w iframe.
+   W iframe cala tresc (~13000px) renderuje sie naraz, wiec WSZYSTKIE
+   efekty GPU biegna jednoczesnie — to grzeje slabsze laptopy i zacina.
+   Wylaczamy najciezsze: full-screen mix-blend-mode overlay'e (grain,
+   scanlines), animowany blur (mgla, glow) i glitch (mix-blend screen).
+   ============================================================ */
+html.liber-embedded .grain,
+html.liber-embedded .scanlines,
+html.liber-embedded .hero__fog { display: none !important; }
+html.liber-embedded .nav__mark { animation: none !important; }
+html.liber-embedded .hero__title-line::before,
+html.liber-embedded .hero__title-line::after { display: none !important; }
+html.liber-embedded .hero__packshot-glow { animation: none !important; filter: blur(28px) !important; }
+
+/* Animacje pauzowane dla sekcji poza widocznym OUTER viewport
+   (klasa dodawana z JS na podstawie postMessage od parent). */
+html.liber-embedded .anim-paused,
+html.liber-embedded .anim-paused * { animation-play-state: paused !important; }
+
 .sr-only {
   position: absolute !important;
   width: 1px; height: 1px;

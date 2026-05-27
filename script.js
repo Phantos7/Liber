@@ -468,6 +468,33 @@ const NO_HOVER = matchMedia('(hover: none), (max-width: 900px)').matches;
     });
   }
 
+  // PERFORMANCE: w iframe cala tresc renderuje sie naraz (~13000px), wiec
+  // wszystkie animacje sekcji biegna jednoczesnie -> grzanie/zacinanie.
+  // Parent wysyla aktualny widoczny zakres (w iframe-coords); pauzujemy
+  // animacje sekcji, ktore sa poza nim (klasa .anim-paused).
+  let vpTick = false;
+  let lastVp = null;
+  const applyPause = () => {
+    vpTick = false;
+    if (!lastVp) return;
+    const margin = 500;
+    const top = lastVp.top - margin;
+    const bot = lastVp.bottom + margin;
+    document.querySelectorAll('section').forEach((s) => {
+      const r = s.getBoundingClientRect();
+      const sTop = r.top + window.scrollY;
+      const visible = (sTop + r.height) > top && sTop < bot;
+      s.classList.toggle('anim-paused', !visible);
+    });
+  };
+  window.addEventListener('message', (e) => {
+    if (!e.data || e.data.type !== 'liber:outerViewport') return;
+    const t = Number(e.data.top), b = Number(e.data.bottom);
+    if (!isFinite(t) || !isFinite(b) || b <= t) return;
+    lastVp = { top: t, bottom: b };
+    if (!vpTick) { vpTick = true; requestAnimationFrame(applyPause); }
+  });
+
   let last = 0;
   const measure = () => Math.max(
     document.documentElement.scrollHeight,
